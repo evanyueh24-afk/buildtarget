@@ -81,9 +81,22 @@ function rateLimited(ip: string): boolean {
 // Validation
 // ---------------------------------------------------------------------------
 
-type ValidationResult =
-  | { ok: true; messages: ApiMessage[] }
-  | { ok: false; status: number; error: string };
+/**
+ * Thrown by `validate` for any rejected request. Carries the HTTP status and a
+ * client-safe message. Using a thrown error (rather than a discriminated-union
+ * return) keeps the handler free of control-flow narrowing, so it compiles
+ * correctly even under non-strict TypeScript — which is what Vercel's
+ * serverless-function builder uses for files in `api/`.
+ */
+class HttpError extends Error {
+  constructor(
+    public readonly status: number,
+    public readonly clientMessage: string,
+  ) {
+    super(clientMessage);
+    this.name = 'HttpError';
+  }
+}
 
 /** Approximate decoded byte length of a base64 string. */
 function decodedBytes(b64: string): number {
@@ -111,8 +124,10 @@ function isTextBlock(b: unknown): b is TextBlock {
   return block.type === 'text' && typeof block.text === 'string';
 }
 
-function validate(body: unknown): ValidationResult {
-  const bad = (error: string, status = 400): ValidationResult => ({ ok: false, status, error });
+function validate(body: unknown): ApiMessage[] {
+  const bad = (error: string, status = 400): never => {
+    throw new HttpError(status, error);
+  };
 
   if (typeof body !== 'object' || body === null) {
     return bad('Invalid request.');
@@ -161,7 +176,7 @@ function validate(body: unknown): ValidationResult {
     return bad('The first message must include a photo.');
   }
 
-  return { ok: true, messages: messages as ApiMessage[] };
+  return messages as ApiMessage[];
 }
 
 // ---------------------------------------------------------------------------
@@ -202,11 +217,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  const result = validate(body);
-  if (!result.ok) {
-    // Log metadata only — never the request body (it contains the photo).
-    console.warn(`[chat] rejected: status=${result.status}`);
-    return res.status(result.status).json({ error: result.error });
+  let messages: ApiMessage[];
+  try {
+    messages = validate(body);
+  } catch (err) {
+    if (err instanceof HttpError) {
+      // Log metadata only — never the request body (it contains the photo).
+      console.warn(`[chat] rejected: status=${err.status}`);
+      return res.status(err.status).json({ error: err.clientMessage });
+    }
+    throw err;
   }
 
   const client = new Anthropic({ apiKey });
@@ -217,7 +237,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       model: MODEL,
       max_tokens: MAX_TOKENS,
       system: SYSTEM_PROMPT,
-      messages: result.messages as Anthropic.MessageParam[],
+      messages: messages as unknown as Anthropic.MessageParam[],
     });
 
     const text = message.content
@@ -228,7 +248,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Metadata-only logging: no image data, no message content.
     console.info(
-      `[chat] ok status=200 turns=${result.messages.length} out_tokens=${message.usage.output_tokens} ms=${Date.now() - start}`,
+      `[chat] ok status=200 turns=${messages.length} out_tokens=${message.usage.output_tokens} ms=${Date.now() - start}`,
     );
 
     if (!text) {
