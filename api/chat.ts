@@ -195,9 +195,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.error(
       '[chat] ANTHROPIC_API_KEY is not set. Configure it in the project environment variables before deploying.',
     );
-    return res
-      .status(503)
-      .json({ error: 'The service is temporarily unavailable. Please try again later.' });
+    // --- TEMP DIAGNOSTIC (remove after debugging) ---------------------------
+    // Reports whether the var is visible to the running function, its length
+    // (to catch stray quotes/whitespace), and which deployment/env is actually
+    // serving — never the key value. Also reveals if the live alias is pinned
+    // to an older deployment built before the var was added.
+    const rawKey = process.env.ANTHROPIC_API_KEY;
+    return res.status(503).json({
+      error: 'The service is temporarily unavailable. Please try again later.',
+      diagnostic: {
+        keyPresent: typeof rawKey === 'string',
+        keyLength: typeof rawKey === 'string' ? rawKey.length : 0,
+        vercelEnv: process.env.VERCEL_ENV ?? null,
+        commitSha: process.env.VERCEL_GIT_COMMIT_SHA ?? null,
+        deploymentId: process.env.VERCEL_DEPLOYMENT_ID ?? process.env.VERCEL_URL ?? null,
+      },
+    });
+    // --- END TEMP DIAGNOSTIC ------------------------------------------------
   }
 
   const ip = clientIp(req);
