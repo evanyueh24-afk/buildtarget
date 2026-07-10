@@ -34,6 +34,7 @@ export function ArchetypeGrid({ selectedKey, onSelect }: Props) {
               >
                 <span className="text-base font-semibold text-slate-100">{a.label}</span>
                 <span className="mt-1 text-xs leading-snug text-slate-400">{a.teaser}</span>
+                <span className="mt-2 text-xs font-medium text-accent">think {a.athlete}</span>
               </button>
             </li>
           );

@@ -3,6 +3,8 @@
 //
 // - `label`   — shown on the card and in the chat header.
 // - `teaser`  — the short (5-8 word) line shown on the card. UI only.
+// - `athlete` — a widely-known reference athlete for that build, shown on the
+//   card as "think <name>". UI only (not sent to the AI).
 // - `description` — the detailed line injected into the AI prompt. Never shown
 //   in the UI. Keep it specific enough to produce a meaningfully different
 //   response per archetype.
@@ -11,6 +13,7 @@ export interface Archetype {
   key: string;
   label: string;
   teaser: string;
+  athlete: string;
   description: string;
 }
 
@@ -19,6 +22,7 @@ export const ARCHETYPES: readonly Archetype[] = [
     key: 'swimmer',
     label: 'Swimmer',
     teaser: 'Broad shoulders, tapered waist, lean',
+    athlete: 'Adam Peaty',
     description:
       'broad shoulders and lats, tapered waist, long lean muscle, strong upper back and core, low bulk in legs relative to upper body',
   },
@@ -26,6 +30,7 @@ export const ARCHETYPES: readonly Archetype[] = [
     key: 'sprinter',
     label: 'Sprinter',
     teaser: 'Powerful legs, lean and explosive',
+    athlete: 'Usain Bolt',
     description:
       'powerful glutes and hamstrings, muscular but not bulky quads, lean upper body, strong core, athletic low body fat',
   },
@@ -33,6 +38,7 @@ export const ARCHETYPES: readonly Archetype[] = [
     key: 'gymnast',
     label: 'Gymnast',
     teaser: 'Dense, compact, exceptional relative strength',
+    athlete: 'Simone Biles',
     description:
       'dense, compact muscle everywhere, exceptional relative strength, strong forearms and shoulders, very low body fat, minimal bulk',
   },
@@ -40,6 +46,7 @@ export const ARCHETYPES: readonly Archetype[] = [
     key: 'climber',
     label: 'Climber',
     teaser: 'Wiry, light, strong grip and back',
+    athlete: 'Alex Honnold',
     description:
       'lean and light overall, strong forearms and back, wiry muscle, minimal excess mass anywhere, strong grip and core',
   },
@@ -47,6 +54,7 @@ export const ARCHETYPES: readonly Archetype[] = [
     key: 'bodybuilder',
     label: 'Classic bodybuilder',
     teaser: 'Maximum muscle mass and symmetry',
+    athlete: 'Chris Bumstead',
     description:
       'maximum overall muscle mass and symmetry across all muscle groups, wide shoulders, small waist, very developed arms and legs',
   },
@@ -54,6 +62,7 @@ export const ARCHETYPES: readonly Archetype[] = [
     key: 'powerlifter',
     label: 'Powerlifter',
     teaser: 'Thick, dense, built for raw strength',
+    athlete: 'Eddie Hall',
     description:
       'dense functional mass through the posterior chain, thick back and legs, strong midsection, built for raw strength over aesthetics',
   },
@@ -61,6 +70,7 @@ export const ARCHETYPES: readonly Archetype[] = [
     key: 'martial-artist',
     label: 'Martial artist',
     teaser: 'Lean, explosive, agile, functional',
+    athlete: 'Conor McGregor',
     description:
       'lean, explosive muscle, strong hips and core rotation, conditioned and agile, functional strength over size',
   },
@@ -68,7 +78,16 @@ export const ARCHETYPES: readonly Archetype[] = [
     key: 'rower',
     label: 'Rower',
     teaser: 'Strong legs and back, high engine',
+    athlete: 'Steve Redgrave',
     description:
       'very strong and thick legs, powerful back and glutes, high overall muscle mass with strong cardiovascular conditioning',
+  },
+  {
+    key: 'football-rugby',
+    label: 'Football/Rugby',
+    teaser: 'Thick, powerful, built for contact',
+    athlete: 'Derrick Henry',
+    description:
+      'thick, powerful frame, strong legs and glutes, dense muscular back and shoulders, built for contact and explosive power, higher overall mass than most other archetypes',
   },
 ] as const;
