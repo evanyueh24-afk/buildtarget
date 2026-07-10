@@ -63,7 +63,7 @@ const MALE: readonly Archetype[] = [
     key: 'gymnast',
     label: 'Gymnast',
     teaser: 'Dense, compact, exceptional relative strength',
-    athlete: 'Simone Biles',
+    athlete: 'Kohei Uchimura',
     description:
       'dense, compact muscle everywhere, exceptional relative strength, strong forearms and shoulders, very low body fat, minimal bulk',
   },
