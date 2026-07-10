@@ -192,7 +192,29 @@ const FEMALE: readonly Archetype[] = [
   },
 ] as const;
 
+// Reference photos live in src/assets/archetypes/ as `<gender>-<key>.<ext>`.
+// Vite bundles them (hashed URLs) via this eager glob; we attach the resolved
+// URL to each archetype's `image`. An archetype with no matching file keeps
+// `image` undefined and the card falls back to the silhouette placeholder.
+const ASSETS = import.meta.glob('../assets/archetypes/*.{jpeg,jpg,png,webp}', {
+  eager: true,
+  import: 'default',
+}) as Record<string, string>;
+
+function resolveImage(gender: Gender, key: string): string | undefined {
+  const stem = `${gender}-${key}.`;
+  for (const [path, url] of Object.entries(ASSETS)) {
+    const name = path.split('/').pop() ?? '';
+    if (name.startsWith(stem)) return url;
+  }
+  return undefined;
+}
+
+function withImages(gender: Gender, list: readonly Archetype[]): readonly Archetype[] {
+  return list.map((a) => ({ ...a, image: resolveImage(gender, a.key) ?? a.image }));
+}
+
 export const ARCHETYPES: Record<Gender, readonly Archetype[]> = {
-  male: MALE,
-  female: FEMALE,
+  male: withImages('male', MALE),
+  female: withImages('female', FEMALE),
 };

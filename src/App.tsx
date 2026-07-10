@@ -5,6 +5,7 @@ import { GenderSelect } from './components/GenderSelect';
 import { ArchetypeGrid } from './components/ArchetypeGrid';
 import { UploadScreen } from './components/UploadScreen';
 import { ChatView } from './components/ChatView';
+import { processReferenceImage } from './lib/image';
 import { sendChat } from './lib/api';
 import { buildAnalysisMessage } from './lib/prompt';
 
@@ -46,12 +47,25 @@ export default function App() {
     setStep('upload');
   }
 
-  function handleImageReady(img: ProcessedImage) {
+  async function handleImageReady(img: ProcessedImage) {
     if (!gender || !archetype) return;
     setImage(img);
-    const first = buildAnalysisMessage(gender, archetype, img);
-    setMessages([first]);
     setStep('chat');
+    setError(null);
+    setLoading(true);
+    // Compress the archetype's reference photo (if any) to send alongside the
+    // user's photo, so the AI can compare the two builds visually. If it fails
+    // to process, we still proceed with the user's photo + text description.
+    let reference: ProcessedImage | undefined;
+    if (archetype.image) {
+      try {
+        reference = await processReferenceImage(archetype.image);
+      } catch {
+        reference = undefined;
+      }
+    }
+    const first = buildAnalysisMessage(gender, archetype, img, reference);
+    setMessages([first]);
     void runChat([first]);
   }
 
