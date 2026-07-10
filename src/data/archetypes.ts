@@ -22,6 +22,15 @@ export interface Archetype {
   teaser: string;
   athlete: string;
   description: string;
+  /**
+   * Optional reference image (URL or imported asset path) shown on the card.
+   * Left unset for every archetype today, so cards render a rights-clean,
+   * on-brand silhouette placeholder instead. To use a real photo you have the
+   * rights to, set this to its URL/path — the card renders it automatically,
+   * no other change needed. Do NOT point this at scraped/unlicensed athlete
+   * photos: it's a deployed product and those carry copyright + likeness risk.
+   */
+  image?: string;
 }
 
 export const GENDERS: readonly { value: Gender; label: string }[] = [

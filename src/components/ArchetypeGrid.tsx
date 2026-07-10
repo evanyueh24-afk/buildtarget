@@ -1,4 +1,5 @@
 import { type Archetype, type Gender, genderLabel } from '../data/archetypes';
+import { ArchetypeImage } from './ArchetypeImage';
 
 interface Props {
   archetypes: readonly Archetype[];
@@ -47,11 +48,12 @@ export function ArchetypeGrid({
                 onClick={() => onSelect(a)}
                 aria-pressed={selected}
                 className={[
-                  'flex h-full w-full flex-col rounded-xl border p-4 text-left transition',
+                  'flex h-full w-full flex-col rounded-xl border p-3 text-left transition',
                   'hover:border-accent hover:bg-ink-800',
                   selected ? 'border-accent bg-accent-soft' : 'border-ink-700 bg-ink-850',
                 ].join(' ')}
               >
+                <ArchetypeImage gender={gender} label={a.label} src={a.image} />
                 <span className="text-base font-semibold text-slate-100">{a.label}</span>
                 <span className="mt-1 text-xs leading-snug text-slate-400">{a.teaser}</span>
                 <span className="mt-2 text-xs font-medium text-accent">think {a.athlete}</span>
