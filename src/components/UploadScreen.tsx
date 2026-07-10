@@ -1,15 +1,23 @@
 import { useRef, useState, type DragEvent } from 'react';
-import type { Archetype } from '../archetypes';
+import { type Archetype, type Gender, genderLabel } from '../data/archetypes';
 import { ACCEPTED_TYPES, isAcceptedImage, processImage } from '../lib/image';
 import type { ProcessedImage } from '../types';
 
 interface Props {
   archetype: Archetype;
+  gender: Gender;
   onChangeArchetype: () => void;
+  onChangeGender: () => void;
   onImageReady: (image: ProcessedImage) => void;
 }
 
-export function UploadScreen({ archetype, onChangeArchetype, onImageReady }: Props) {
+export function UploadScreen({
+  archetype,
+  gender,
+  onChangeArchetype,
+  onChangeGender,
+  onImageReady,
+}: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -42,17 +50,29 @@ export function UploadScreen({ archetype, onChangeArchetype, onImageReady }: Pro
 
   return (
     <section aria-labelledby="upload-heading" className="mx-auto w-full max-w-xl">
-      <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm text-slate-400">
           Target: <span className="font-semibold text-slate-100">{archetype.label}</span>
+          <span className="mx-1 text-slate-600">·</span>
+          <span className="font-semibold text-slate-100">{genderLabel(gender)}</span>
         </p>
-        <button
-          type="button"
-          onClick={onChangeArchetype}
-          className="rounded-md px-2 py-1 text-sm font-medium text-accent hover:text-accent-hover hover:underline"
-        >
-          Change
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={onChangeArchetype}
+            className="rounded-md px-2 py-1 text-sm font-medium text-accent hover:text-accent-hover hover:underline"
+          >
+            Change archetype
+          </button>
+          <span aria-hidden="true" className="text-slate-600">·</span>
+          <button
+            type="button"
+            onClick={onChangeGender}
+            className="rounded-md px-2 py-1 text-sm font-medium text-accent hover:text-accent-hover hover:underline"
+          >
+            Change gender
+          </button>
+        </div>
       </div>
 
       <h2 id="upload-heading" className="mb-1 text-2xl font-semibold tracking-tight">

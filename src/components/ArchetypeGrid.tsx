@@ -1,13 +1,35 @@
-import { ARCHETYPES, type Archetype } from '../archetypes';
+import { type Archetype, type Gender, genderLabel } from '../data/archetypes';
 
 interface Props {
+  archetypes: readonly Archetype[];
+  gender: Gender;
   selectedKey: string | null;
   onSelect: (archetype: Archetype) => void;
+  onChangeGender: () => void;
 }
 
-export function ArchetypeGrid({ selectedKey, onSelect }: Props) {
+export function ArchetypeGrid({
+  archetypes,
+  gender,
+  selectedKey,
+  onSelect,
+  onChangeGender,
+}: Props) {
   return (
     <section aria-labelledby="archetype-heading" className="mx-auto w-full max-w-3xl">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <p className="text-sm text-slate-400">
+          Training focus: <span className="font-semibold text-slate-100">{genderLabel(gender)}</span>
+        </p>
+        <button
+          type="button"
+          onClick={onChangeGender}
+          className="rounded-md px-2 py-1 text-sm font-medium text-accent hover:text-accent-hover hover:underline"
+        >
+          Change
+        </button>
+      </div>
+
       <h2 id="archetype-heading" className="mb-1 text-2xl font-semibold tracking-tight">
         Pick a target physique
       </h2>
@@ -16,7 +38,7 @@ export function ArchetypeGrid({ selectedKey, onSelect }: Props) {
       </p>
 
       <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4" role="list">
-        {ARCHETYPES.map((a) => {
+        {archetypes.map((a) => {
           const selected = a.key === selectedKey;
           return (
             <li key={a.key}>
@@ -27,9 +49,7 @@ export function ArchetypeGrid({ selectedKey, onSelect }: Props) {
                 className={[
                   'flex h-full w-full flex-col rounded-xl border p-4 text-left transition',
                   'hover:border-accent hover:bg-ink-800',
-                  selected
-                    ? 'border-accent bg-accent-soft'
-                    : 'border-ink-700 bg-ink-850',
+                  selected ? 'border-accent bg-accent-soft' : 'border-ink-700 bg-ink-850',
                 ].join(' ')}
               >
                 <span className="text-base font-semibold text-slate-100">{a.label}</span>

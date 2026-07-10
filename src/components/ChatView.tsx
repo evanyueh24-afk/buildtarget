@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import type { Archetype } from '../archetypes';
+import { type Archetype, type Gender, genderLabel } from '../data/archetypes';
 import type { ApiMessage } from '../types';
 import { ChatBubble } from './ChatBubble';
 import { TypingIndicator } from './TypingIndicator';
 
 interface Props {
   archetype: Archetype;
+  gender: Gender;
   previewUrl: string;
   messages: ApiMessage[];
   loading: boolean;
@@ -16,6 +17,7 @@ interface Props {
 
 export function ChatView({
   archetype,
+  gender,
   previewUrl,
   messages,
   loading,
@@ -43,6 +45,8 @@ export function ChatView({
     <section aria-label="Coaching conversation" className="mx-auto flex h-full w-full max-w-2xl flex-col">
       <div className="mb-3 shrink-0 text-sm text-slate-400">
         Target physique: <span className="font-semibold text-slate-100">{archetype.label}</span>
+        <span className="mx-1 text-slate-600">·</span>
+        <span className="font-semibold text-slate-100">{genderLabel(gender)}</span>
       </div>
 
       <div

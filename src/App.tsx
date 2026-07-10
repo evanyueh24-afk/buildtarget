@@ -1,16 +1,18 @@
 import { useState } from 'react';
-import type { Archetype } from './archetypes';
+import { ARCHETYPES, type Archetype, type Gender } from './data/archetypes';
 import type { ApiMessage, ProcessedImage } from './types';
+import { GenderSelect } from './components/GenderSelect';
 import { ArchetypeGrid } from './components/ArchetypeGrid';
 import { UploadScreen } from './components/UploadScreen';
 import { ChatView } from './components/ChatView';
 import { sendChat } from './lib/api';
 import { buildAnalysisMessage } from './lib/prompt';
 
-type Step = 'select' | 'upload' | 'chat';
+type Step = 'gender' | 'select' | 'upload' | 'chat';
 
 export default function App() {
-  const [step, setStep] = useState<Step>('select');
+  const [step, setStep] = useState<Step>('gender');
+  const [gender, setGender] = useState<Gender | null>(null);
   const [archetype, setArchetype] = useState<Archetype | null>(null);
   // Image is held in React state (memory) only — never persisted anywhere.
   const [image, setImage] = useState<ProcessedImage | null>(null);
@@ -32,15 +34,22 @@ export default function App() {
     }
   }
 
-  function handleSelect(a: Archetype) {
+  function handleSelectGender(g: Gender) {
+    setGender(g);
+    // A previously chosen archetype belongs to the old gender's set — clear it.
+    setArchetype(null);
+    setStep('select');
+  }
+
+  function handleSelectArchetype(a: Archetype) {
     setArchetype(a);
     setStep('upload');
   }
 
   function handleImageReady(img: ProcessedImage) {
-    if (!archetype) return;
+    if (!gender || !archetype) return;
     setImage(img);
-    const first = buildAnalysisMessage(archetype, img);
+    const first = buildAnalysisMessage(gender, archetype, img);
     setMessages([first]);
     setStep('chat');
     void runChat([first]);
@@ -58,7 +67,8 @@ export default function App() {
   }
 
   function reset() {
-    setStep('select');
+    setStep('gender');
+    setGender(null);
     setArchetype(null);
     setImage(null);
     setMessages([]);
@@ -73,7 +83,7 @@ export default function App() {
           <span className="text-lg font-bold tracking-tight text-slate-100">BuildTarget</span>
           <span className="hidden text-xs text-slate-500 sm:inline">train toward a physique</span>
         </div>
-        {step !== 'select' && (
+        {step !== 'gender' && (
           <button
             type="button"
             onClick={reset}
@@ -85,26 +95,41 @@ export default function App() {
       </header>
 
       <main className="min-h-0 flex-1">
-        {step === 'select' && (
+        {step === 'gender' && (
           <div className="h-full overflow-y-auto px-4 py-8">
-            <ArchetypeGrid selectedKey={archetype?.key ?? null} onSelect={handleSelect} />
+            <GenderSelect selected={gender} onSelect={handleSelectGender} />
           </div>
         )}
 
-        {step === 'upload' && archetype && (
+        {step === 'select' && gender && (
+          <div className="h-full overflow-y-auto px-4 py-8">
+            <ArchetypeGrid
+              archetypes={ARCHETYPES[gender]}
+              gender={gender}
+              selectedKey={archetype?.key ?? null}
+              onSelect={handleSelectArchetype}
+              onChangeGender={() => setStep('gender')}
+            />
+          </div>
+        )}
+
+        {step === 'upload' && gender && archetype && (
           <div className="h-full overflow-y-auto px-4 py-8">
             <UploadScreen
               archetype={archetype}
+              gender={gender}
               onChangeArchetype={() => setStep('select')}
+              onChangeGender={() => setStep('gender')}
               onImageReady={handleImageReady}
             />
           </div>
         )}
 
-        {step === 'chat' && archetype && image && (
+        {step === 'chat' && gender && archetype && image && (
           <div className="h-full px-4 py-4">
             <ChatView
               archetype={archetype}
+              gender={gender}
               previewUrl={image.previewUrl}
               messages={messages}
               loading={loading}
