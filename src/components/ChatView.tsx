@@ -9,6 +9,15 @@ import { TypingIndicator } from './TypingIndicator';
 
 const MAX_ATTACHMENTS = 4;
 
+// Quick-start chips that surface the wider (but still bounded) scope so users
+// discover it rather than guessing. Shown after the first analysis, until the
+// user sends their first follow-up.
+const SUGGESTIONS = [
+  "How's my recovery?",
+  'Any injuries to work around?',
+  'What should I eat around training?',
+];
+
 interface Props {
   archetype: Archetype;
   gender: Gender;
@@ -82,6 +91,12 @@ export function ChatView({
   }
 
   const canSend = !loading && !attaching && (draft.trim().length > 0 || attachments.length > 0);
+
+  // Show suggestion chips once the first analysis has arrived and before the
+  // user has asked anything of their own.
+  const hasAssistantReply = turns.some((t) => t.role === 'assistant');
+  const hasUserFollowUp = turns.slice(1).some((t) => t.role === 'user');
+  const showSuggestions = !loading && hasAssistantReply && !hasUserFollowUp;
 
   function submit(e: FormEvent) {
     e.preventDefault();
@@ -199,6 +214,22 @@ export function ChatView({
 
         <div ref={bottomRef} />
       </div>
+
+      {/* Quick-start suggestion chips */}
+      {showSuggestions && (
+        <div className="mt-3 flex flex-wrap gap-2" aria-label="Suggested questions">
+          {SUGGESTIONS.map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => onSend(s, [])}
+              className="rounded-full border border-ink-700 bg-ink-850 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-accent hover:text-accent"
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Attachment previews */}
       {attachments.length > 0 && (

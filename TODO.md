@@ -24,6 +24,14 @@
 - [x] Scope guardrails preserved: off-topic redirect (rule 10) and the
       never-comment-on-weight/body-fat/attractiveness rule (rule 5) unchanged;
       attached images subject to the same "unclear / not a person" handling.
+- [x] Deeper (not broader) in-domain scope: system prompt now explicitly covers
+      sleep, recovery/rest days, injury-aware training, GENERAL nutrition
+      (protein ranges / meal-timing basics only — no calorie targets, macros, or
+      diet plans), practical consistency/motivation, and mobility/flexibility.
+      Redirect boundary for genuinely unrelated topics kept.
+- [x] Quick-start suggestion chips in chat ("How's my recovery?", "Any injuries
+      to work around?", "What should I eat around training?") shown after the
+      first analysis so users discover the wider scope.
 
 ## Outstanding / known limitations
 
