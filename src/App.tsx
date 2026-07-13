@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { ARCHETYPES, type Archetype, type Gender } from './data/archetypes';
-import type { ApiMessage, ProcessedImage } from './types';
+import type { ContentBlock, ProcessedImage, Turn } from './types';
 import { GenderSelect } from './components/GenderSelect';
 import { ArchetypeGrid } from './components/ArchetypeGrid';
 import { UploadScreen } from './components/UploadScreen';
 import { ChatView } from './components/ChatView';
 import { processReferenceImage } from './lib/image';
+import { imageBlockOf } from './lib/message';
 import { sendChat } from './lib/api';
 import { buildAnalysisMessage } from './lib/prompt';
 
@@ -17,16 +18,17 @@ export default function App() {
   const [archetype, setArchetype] = useState<Archetype | null>(null);
   // Image is held in React state (memory) only — never persisted anywhere.
   const [image, setImage] = useState<ProcessedImage | null>(null);
-  const [messages, setMessages] = useState<ApiMessage[]>([]);
+  const [turns, setTurns] = useState<Turn[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function runChat(history: ApiMessage[]) {
+  async function runChat(history: Turn[]) {
     setError(null);
     setLoading(true);
     try {
-      const text = await sendChat(history);
-      setMessages([...history, { role: 'assistant', content: text }]);
+      // Strip display-only metadata before sending to the proxy.
+      const text = await sendChat(history.map(({ role, content }) => ({ role, content })));
+      setTurns([...history, { role: 'assistant', content: text, ts: Date.now() }]);
     } catch (e) {
       // Keep the conversation intact so the user can retry the same turn.
       setError(e instanceof Error ? e.message : 'Something went wrong. Please try again.');
@@ -54,8 +56,7 @@ export default function App() {
     setError(null);
     setLoading(true);
     // Compress the archetype's reference photo (if any) to send alongside the
-    // user's photo, so the AI can compare the two builds visually. If it fails
-    // to process, we still proceed with the user's photo + text description.
+    // user's photo, so the AI can compare the two builds visually.
     let reference: ProcessedImage | undefined;
     if (archetype.image) {
       try {
@@ -65,19 +66,29 @@ export default function App() {
       }
     }
     const first = buildAnalysisMessage(gender, archetype, img, reference);
-    setMessages([first]);
-    void runChat([first]);
+    const firstTurn: Turn = { ...first, ts: Date.now() };
+    setTurns([firstTurn]);
+    void runChat([firstTurn]);
   }
 
-  function handleSend(text: string) {
-    const next: ApiMessage[] = [...messages, { role: 'user', content: text }];
-    setMessages(next);
+  function handleSend(text: string, attachments: ProcessedImage[]) {
+    const trimmed = text.trim();
+    let content: string | ContentBlock[];
+    if (attachments.length > 0) {
+      const blocks: ContentBlock[] = attachments.map(imageBlockOf);
+      if (trimmed) blocks.push({ type: 'text', text: trimmed });
+      content = blocks;
+    } else {
+      content = trimmed;
+    }
+    const next: Turn[] = [...turns, { role: 'user', content, ts: Date.now() }];
+    setTurns(next);
     void runChat(next);
   }
 
   function handleRetry() {
-    // `messages` already ends with the user turn that failed; resend it.
-    void runChat(messages);
+    // `turns` already ends with the user turn that failed; resend it.
+    void runChat(turns);
   }
 
   function reset() {
@@ -85,7 +96,7 @@ export default function App() {
     setGender(null);
     setArchetype(null);
     setImage(null);
-    setMessages([]);
+    setTurns([]);
     setLoading(false);
     setError(null);
   }
@@ -145,7 +156,7 @@ export default function App() {
               archetype={archetype}
               gender={gender}
               previewUrl={image.previewUrl}
-              messages={messages}
+              turns={turns}
               loading={loading}
               error={error}
               onSend={handleSend}

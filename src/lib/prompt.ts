@@ -1,12 +1,6 @@
 import { type Archetype, type Gender, genderLabel } from '../data/archetypes';
-import type { ApiMessage, ContentBlock, ProcessedImage, ImageBlock } from '../types';
-
-function imageBlock(image: ProcessedImage): ImageBlock {
-  return {
-    type: 'image',
-    source: { type: 'base64', media_type: image.mediaType, data: image.base64 },
-  };
-}
+import type { ApiMessage, ContentBlock, ProcessedImage } from '../types';
+import { imageBlockOf } from './message';
 
 /**
  * Build the first user turn. The user's photo goes first; when a reference
@@ -28,8 +22,8 @@ export function buildAnalysisMessage(
 ): ApiMessage {
   const focus = genderLabel(gender).toLowerCase();
 
-  const content: ContentBlock[] = [imageBlock(userImage)];
-  if (referenceImage) content.push(imageBlock(referenceImage));
+  const content: ContentBlock[] = [imageBlockOf(userImage)];
+  if (referenceImage) content.push(imageBlockOf(referenceImage));
 
   const intro = referenceImage
     ? `I am training as a ${focus} athlete and want to build a physique like the "${archetype.label}" archetype — ${archetype.description}.

@@ -24,6 +24,105 @@ body {
   border-radius: 4px;
 }
 
+/* Markdown rendering for AI messages — compact, chat-bubble friendly. */
+.md > :first-child {
+  margin-top: 0;
+}
+.md > :last-child {
+  margin-bottom: 0;
+}
+.md p {
+  margin: 0 0 0.6rem;
+}
+.md ul,
+.md ol {
+  margin: 0 0 0.6rem;
+  padding-left: 1.25rem;
+}
+.md ul {
+  list-style: disc;
+}
+.md ol {
+  list-style: decimal;
+}
+.md li {
+  margin: 0.15rem 0;
+}
+.md li::marker {
+  color: theme('colors.accent.DEFAULT');
+}
+.md strong {
+  font-weight: 700;
+  color: #fff;
+}
+.md em {
+  font-style: italic;
+}
+.md h1,
+.md h2,
+.md h3,
+.md h4 {
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0.6rem 0 0.4rem;
+}
+.md h1 { font-size: 1.15rem; }
+.md h2 { font-size: 1.1rem; }
+.md h3 { font-size: 1.02rem; }
+.md a {
+  color: theme('colors.accent.DEFAULT');
+  text-decoration: underline;
+}
+.md code {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  font-size: 0.9em;
+}
+.md pre {
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 8px;
+  padding: 0.75rem;
+  overflow-x: auto;
+  margin: 0 0 0.6rem;
+}
+.md pre code {
+  background: transparent;
+  padding: 0;
+}
+.md blockquote {
+  border-left: 3px solid theme('colors.ink.600');
+  margin: 0 0 0.6rem;
+  padding-left: 0.75rem;
+  color: theme('colors.slate.400');
+}
+.md table {
+  border-collapse: collapse;
+  margin: 0 0 0.6rem;
+  font-size: 0.9em;
+}
+.md th,
+.md td {
+  border: 1px solid theme('colors.ink.700');
+  padding: 0.3rem 0.5rem;
+  text-align: left;
+}
+
+/* Message entrance */
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.bubble-in {
+  animation: bubble-in 0.18s ease-out;
+}
+
 /* Respect users who prefer reduced motion. */
 @media (prefers-reduced-motion: reduce) {
   *,
