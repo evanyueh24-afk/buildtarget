@@ -42,7 +42,7 @@ export default function App() {
   // the new content instead of being dropped at <body>.
   useEffect(() => {
     const target =
-      mainRef.current?.querySelector('h2') ?? mainRef.current?.querySelector('section');
+      mainRef.current?.querySelector('h1, h2') ?? mainRef.current?.querySelector('section');
     if (target instanceof HTMLElement) {
       target.tabIndex = -1;
       target.focus({ preventScroll: true });
@@ -141,8 +141,7 @@ export default function App() {
     <div className="flex h-full flex-col">
       <header className="flex shrink-0 items-center justify-between border-b border-ink-800 px-4 py-3">
         <div className="flex items-baseline gap-2">
-          <span className="text-lg font-bold tracking-tight text-slate-100">BuildTarget</span>
-          <span className="hidden text-xs text-slate-500 sm:inline">train toward a physique</span>
+          <span className="text-lg font-bold tracking-tight text-slate-50">BuildTarget</span>
         </div>
         {step !== 'gender' && step !== 'age' && (
           <button

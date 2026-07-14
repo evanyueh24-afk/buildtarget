@@ -9,15 +9,18 @@ const ICONS: Record<Gender, string> = { male: '♂', female: '♀' };
 
 export function GenderSelect({ selected, onSelect }: Props) {
   return (
-    <section aria-labelledby="gender-heading" className="mx-auto w-full max-w-xl">
-      <h2 id="gender-heading" className="mb-1 text-2xl font-semibold tracking-tight">
-        Select your training focus
-      </h2>
-      <p className="mb-6 text-sm text-slate-400">
-        This tailors the physique archetypes and the comparison to your build.
+    <section aria-labelledby="gender-heading" className="mx-auto w-full max-w-xl py-6 sm:py-12">
+      <h1
+        id="gender-heading"
+        className="text-balance text-4xl font-bold leading-[1.05] tracking-tight text-slate-50 sm:text-6xl"
+      >
+        Train toward a physique.
+      </h1>
+      <p className="mt-5 max-w-md text-base leading-relaxed text-slate-400 sm:text-lg">
+        Choose your training focus to begin.
       </p>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="mt-14 grid grid-cols-2 gap-4 sm:mt-20">
         {GENDERS.map((g) => {
           const isSelected = g.value === selected;
           return (
@@ -27,15 +30,18 @@ export function GenderSelect({ selected, onSelect }: Props) {
               onClick={() => onSelect(g.value)}
               aria-pressed={isSelected}
               className={[
-                'flex flex-col items-center justify-center gap-3 rounded-2xl border px-6 py-12 transition',
+                'group flex flex-col items-center justify-center gap-3 rounded-2xl border px-6 py-14 transition',
                 'hover:border-accent hover:bg-ink-800',
                 isSelected ? 'border-accent bg-accent-soft' : 'border-ink-700 bg-ink-850',
               ].join(' ')}
             >
-              <span aria-hidden="true" className="text-4xl text-accent">
+              <span
+                aria-hidden="true"
+                className={`text-4xl transition ${isSelected ? 'text-accent' : 'text-slate-400 group-hover:text-accent'}`}
+              >
                 {ICONS[g.value]}
               </span>
-              <span className="text-lg font-semibold text-slate-100">{g.label}</span>
+              <span className="text-lg font-semibold text-slate-50">{g.label}</span>
             </button>
           );
         })}

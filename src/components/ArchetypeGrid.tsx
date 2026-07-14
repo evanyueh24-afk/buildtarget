@@ -17,10 +17,11 @@ export function ArchetypeGrid({
   onChangeGender,
 }: Props) {
   return (
-    <section aria-labelledby="archetype-heading" className="mx-auto w-full max-w-3xl">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <p className="text-sm text-slate-400">
-          Training focus: <span className="font-semibold text-slate-100">{genderLabel(gender)}</span>
+    <section aria-labelledby="archetype-heading" className="mx-auto w-full max-w-3xl py-4 sm:py-8">
+      <div className="mb-5 flex items-center justify-between gap-3">
+        <p className="text-xs font-medium uppercase tracking-widest text-slate-500">
+          Training focus ·{' '}
+          <span className="text-slate-300">{genderLabel(gender)}</span>
         </p>
         <button
           type="button"
@@ -31,12 +32,13 @@ export function ArchetypeGrid({
         </button>
       </div>
 
-      <h2 id="archetype-heading" className="mb-1 text-2xl font-semibold tracking-tight">
-        Pick a target physique
+      <h2
+        id="archetype-heading"
+        className="text-balance text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl"
+      >
+        Pick a target physique.
       </h2>
-      <p className="mb-6 text-sm text-slate-400">
-        Choose the athletic build you want to train toward. You&rsquo;ll upload a photo next.
-      </p>
+      <p className="mt-3 mb-10 text-base text-slate-400">The build you&rsquo;re training toward.</p>
 
       <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4" role="list">
         {archetypes.map((a) => {

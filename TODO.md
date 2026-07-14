@@ -37,6 +37,13 @@
       parent/guardian confirmation if the user appears to be a minor.
 - [x] Plain-language Privacy Policy + Terms of Service (one page each), linked
       from the footer, opened as an accessible dialog.
+- [x] Visual redesign (minimal, dark, athlete-focused): palette moved to CSS
+      variable tokens (bg #0a0c10, surface #12151c, confident-blue accent
+      #3b82f6 replacing the orange/rust throughout, off-white text, muted
+      blue-grey secondary). Start screen anchored by a large bold hero headline
+      ("Train toward a physique.") with a short subhead and generous spacing;
+      archetype picker restyled to match. Accent carried app-wide via the single
+      `accent` token. Functionality unchanged; verified on 375px and desktop.
 
 ## Item-3 audit findings
 
