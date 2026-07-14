@@ -1,19 +1,33 @@
 import { useState } from 'react';
 import { ARCHETYPES, type Archetype, type Gender } from './data/archetypes';
 import type { ContentBlock, ProcessedImage, Turn } from './types';
+import { AgeGate } from './components/AgeGate';
 import { GenderSelect } from './components/GenderSelect';
 import { ArchetypeGrid } from './components/ArchetypeGrid';
 import { UploadScreen } from './components/UploadScreen';
 import { ChatView } from './components/ChatView';
+import { LegalOverlay, type LegalDoc } from './components/Legal';
 import { processReferenceImage } from './lib/image';
 import { imageBlockOf } from './lib/message';
 import { sendChat } from './lib/api';
 import { buildAnalysisMessage } from './lib/prompt';
 
-type Step = 'gender' | 'select' | 'upload' | 'chat';
+type Step = 'age' | 'gender' | 'select' | 'upload' | 'chat';
+
+const AGE_OK_KEY = 'bt_age_ok';
+
+function ageConfirmed(): boolean {
+  try {
+    return localStorage.getItem(AGE_OK_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
 
 export default function App() {
-  const [step, setStep] = useState<Step>('gender');
+  // Skip the age gate if it was confirmed on a previous visit.
+  const [step, setStep] = useState<Step>(() => (ageConfirmed() ? 'gender' : 'age'));
+  const [legal, setLegal] = useState<LegalDoc | null>(null);
   const [gender, setGender] = useState<Gender | null>(null);
   const [archetype, setArchetype] = useState<Archetype | null>(null);
   // Image is held in React state (memory) only — never persisted anywhere.
@@ -35,6 +49,15 @@ export default function App() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleAgeContinue() {
+    try {
+      localStorage.setItem(AGE_OK_KEY, '1');
+    } catch {
+      // Storage may be unavailable (private mode); proceed for this session anyway.
+    }
+    setStep('gender');
   }
 
   function handleSelectGender(g: Gender) {
@@ -108,7 +131,7 @@ export default function App() {
           <span className="text-lg font-bold tracking-tight text-slate-100">BuildTarget</span>
           <span className="hidden text-xs text-slate-500 sm:inline">train toward a physique</span>
         </div>
-        {step !== 'gender' && (
+        {step !== 'gender' && step !== 'age' && (
           <button
             type="button"
             onClick={reset}
@@ -120,6 +143,12 @@ export default function App() {
       </header>
 
       <main className="min-h-0 flex-1">
+        {step === 'age' && (
+          <div className="flex h-full items-center justify-center overflow-y-auto px-4 py-8">
+            <AgeGate onContinue={handleAgeContinue} />
+          </div>
+        )}
+
         {step === 'gender' && (
           <div className="h-full overflow-y-auto px-4 py-8">
             <GenderSelect selected={gender} onSelect={handleSelectGender} />
@@ -167,9 +196,30 @@ export default function App() {
       </main>
 
       <footer className="shrink-0 border-t border-ink-800 px-4 py-3 text-center text-xs text-slate-500">
-        BuildTarget gives general training information, not medical or fitness advice. Consult a
-        qualified professional before starting a new training program.
+        <p>
+          BuildTarget gives general training information, not medical or fitness advice. Consult a
+          qualified professional before starting a new training program.
+        </p>
+        <p className="mt-1">
+          <button
+            type="button"
+            onClick={() => setLegal('privacy')}
+            className="font-medium text-slate-400 underline hover:text-accent"
+          >
+            Privacy Policy
+          </button>
+          <span className="mx-2 text-slate-600">·</span>
+          <button
+            type="button"
+            onClick={() => setLegal('terms')}
+            className="font-medium text-slate-400 underline hover:text-accent"
+          >
+            Terms of Service
+          </button>
+        </p>
       </footer>
+
+      {legal && <LegalOverlay doc={legal} onClose={() => setLegal(null)} />}
     </div>
   );
 }
