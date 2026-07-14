@@ -11,13 +11,37 @@ interface Props {
  *  the close button on open and returns to the invoker on unmount. */
 export function LegalOverlay({ doc, onClose }: Props) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const invoker = useRef<Element | null>(null);
 
   useEffect(() => {
     invoker.current = document.activeElement;
     closeRef.current?.focus();
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      // Trap Tab focus within the dialog so it can't reach the background.
+      if (e.key === 'Tab' && panelRef.current) {
+        const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const active = document.activeElement;
+        if (!panelRef.current.contains(active)) {
+          e.preventDefault();
+          first.focus();
+        } else if (e.shiftKey && active === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     }
     document.addEventListener('keydown', onKey);
     return () => {
@@ -38,7 +62,10 @@ export function LegalOverlay({ doc, onClose }: Props) {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="my-auto w-full max-w-2xl rounded-2xl border border-ink-700 bg-ink-900 p-6 sm:p-8">
+      <div
+        ref={panelRef}
+        className="my-auto w-full max-w-2xl rounded-2xl border border-ink-700 bg-ink-900 p-6 sm:p-8"
+      >
         <div className="mb-4 flex items-center justify-between gap-4">
           <h2 id="legal-title" className="text-xl font-semibold tracking-tight">
             {title}

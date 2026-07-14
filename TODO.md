@@ -38,27 +38,24 @@
 - [x] Plain-language Privacy Policy + Terms of Service (one page each), linked
       from the footer, opened as an accessible dialog.
 
-## Item-3 audit findings (2026 — report only, not yet fixed)
+## Item-3 audit findings
 
-- **Leftover debug code:** the TEMP diagnostic block in `api/chat.ts` (503 path
-  returns keyPresent/keyLength/VERCEL_ENV/commit/deploymentId) is still present.
-  Recommend: capture it once to resolve the 503, then remove. The `console.*`
-  calls are intentional metadata-only logging — keep.
-- **Rate limit (current):** 20 requests/hour per IP, in-memory (resets on cold
-  start/redeploy). Other bounds: 30 messages/convo, 5MB/image, max_tokens 600.
-- **A11y — focus not moved on step transitions:** after changing screen (age→
-  gender→archetype→upload→chat, and back) focus falls to `<body>`; keyboard
-  users can still Tab but lose their place and screen readers aren't told the
-  screen changed. Fix: move focus to the new screen's heading on transition.
-- **A11y — legal dialog is not focus-trapped:** `role="dialog"`/`aria-modal`,
-  Escape, focus-on-open and focus-return all work, but Tab can move into the
-  background behind the modal. Fix: trap Tab within the dialog (and/or mark
-  background `inert`).
-- **A11y — low-contrast small text:** timestamps (`text-slate-500`, 11px) and the
-  footer disclaimer likely fall below WCAG AA 4.5:1 on the near-black bg. Fix:
-  bump to a lighter slate.
-- **A11y OK:** all controls are real buttons/inputs, reachable and Enter-
-  operable; cards use `aria-pressed`; images have `alt`; chat log is
+- **Leftover debug code — STILL OPEN:** the TEMP diagnostic block in
+  `api/chat.ts` (503 path returns keyPresent/keyLength/VERCEL_ENV/commit/
+  deploymentId) is still present, kept intentionally as the only lever on the
+  unresolved live 503. Next: capture it once from the live app, then remove.
+  The `console.*` calls are intentional metadata-only logging — keep.
+- **Rate limit (current, unchanged):** 20 requests/hour per IP, in-memory
+  (resets on cold start/redeploy). Other bounds: 30 messages/convo, 5MB/image,
+  max_tokens 600. (Report only — no change requested.)
+- **A11y — focus on step transitions — FIXED:** focus now moves to the new
+  screen's heading (chat view falls back to its region) on every transition.
+- **A11y — legal dialog focus-trap — FIXED:** Tab and Shift+Tab now wrap within
+  the dialog; Escape/close/focus-return still work.
+- **A11y — low-contrast small text — FIXED:** timestamps and footer text bumped
+  from slate-500 to slate-400.
+- **A11y OK (unchanged):** all controls are real buttons/inputs, reachable and
+  Enter-operable; cards use `aria-pressed`; images have `alt`; chat log is
   `role="log"`/`aria-live`; global visible focus ring; reduced-motion respected;
   icon-only buttons have `aria-label`.
 

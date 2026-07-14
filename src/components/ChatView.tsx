@@ -123,7 +123,7 @@ export function ChatView({
       >
         {turns.map((turn, i) => {
           const time = (
-            <div className={`mt-1 text-[11px] text-slate-500 ${turn.role === 'user' ? 'text-right' : 'text-left'}`}>
+            <div className={`mt-1 text-[11px] text-slate-400 ${turn.role === 'user' ? 'text-right' : 'text-left'}`}>
               {formatTime(turn.ts)}
             </div>
           );

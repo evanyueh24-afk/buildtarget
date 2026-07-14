@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ARCHETYPES, type Archetype, type Gender } from './data/archetypes';
 import type { ContentBlock, ProcessedImage, Turn } from './types';
 import { AgeGate } from './components/AgeGate';
@@ -35,6 +35,19 @@ export default function App() {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const mainRef = useRef<HTMLElement>(null);
+
+  // On each screen change, move focus to the new screen's heading (or its
+  // region for the chat view) so keyboard and screen-reader users are placed on
+  // the new content instead of being dropped at <body>.
+  useEffect(() => {
+    const target =
+      mainRef.current?.querySelector('h2') ?? mainRef.current?.querySelector('section');
+    if (target instanceof HTMLElement) {
+      target.tabIndex = -1;
+      target.focus({ preventScroll: true });
+    }
+  }, [step]);
 
   async function runChat(history: Turn[]) {
     setError(null);
@@ -142,7 +155,7 @@ export default function App() {
         )}
       </header>
 
-      <main className="min-h-0 flex-1">
+      <main ref={mainRef} className="min-h-0 flex-1">
         {step === 'age' && (
           <div className="flex h-full items-center justify-center overflow-y-auto px-4 py-8">
             <AgeGate onContinue={handleAgeContinue} />
@@ -195,7 +208,7 @@ export default function App() {
         )}
       </main>
 
-      <footer className="shrink-0 border-t border-ink-800 px-4 py-3 text-center text-xs text-slate-500">
+      <footer className="shrink-0 border-t border-ink-800 px-4 py-3 text-center text-xs text-slate-400">
         <p>
           BuildTarget gives general training information, not medical or fitness advice. Consult a
           qualified professional before starting a new training program.
