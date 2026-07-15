@@ -37,6 +37,12 @@
       parent/guardian confirmation if the user appears to be a minor.
 - [x] Plain-language Privacy Policy + Terms of Service (one page each), linked
       from the footer, opened as an accessible dialog.
+- [x] Structured initial analysis: the first response now follows a fixed
+      Markdown format — Current strengths, Trait scores (each 1-10, scored
+      relative to the archetype's emphasis, one sentence each), Priority training
+      focus (3-5 exercises tied to lowest scores), one encouragement line, ending
+      with the exact disclaimer. Follow-ups stay conversational/concise. Scores
+      are development-relative (not aesthetic/bodyweight), preserving rule 5.
 - [x] Post-analysis "goal card": shows the archetype's reference build (honest
       visual target, not a doctored photo of the user) + a "See your projected
       progress" button that requests a realistic, training-focused text roadmap
