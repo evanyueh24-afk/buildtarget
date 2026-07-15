@@ -37,6 +37,14 @@
       parent/guardian confirmation if the user appears to be a minor.
 - [x] Plain-language Privacy Policy + Terms of Service (one page each), linked
       from the footer, opened as an accessible dialog.
+- [x] Post-analysis "goal card": shows the archetype's reference build (honest
+      visual target, not a doctored photo of the user) + a "See your projected
+      progress" button that requests a realistic, training-focused text roadmap
+      (3/6/12-month milestones). Deliberately NOT AI image generation of the
+      user's future body — that was declined as misleading + a likeness/minor-
+      safety risk, and Claude can't generate images anyway. System prompt rule
+      12 makes the AI decline "photo of my future body" requests and offer the
+      roadmap instead.
 - [x] Visual redesign (minimal, dark, athlete-focused): palette moved to CSS
       variable tokens (bg #0a0c10, surface #12151c, confident-blue accent
       #3b82f6 replacing the orange/rust throughout, off-white text, muted

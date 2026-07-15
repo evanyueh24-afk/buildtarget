@@ -18,6 +18,12 @@ const SUGGESTIONS = [
   'What should I eat around training?',
 ];
 
+// Sent when the user taps "See your projected progress". Deliberately a text
+// roadmap grounded in training outcomes — NOT an image or a prediction of what
+// the person will look like (see the note in the summary / system prompt).
+const PROGRESS_PROMPT =
+  'Give me a realistic projected progress roadmap toward this archetype: what training changes and milestones I can expect at roughly 3, 6, and 12 months of consistent, well-programmed training. Focus on strength, muscle development, and proportion, and be honest about what is realistic in each timeframe.';
+
 interface Props {
   archetype: Archetype;
   gender: Gender;
@@ -214,6 +220,30 @@ export function ChatView({
 
         <div ref={bottomRef} />
       </div>
+
+      {/* Goal card: the target build (honest reference, not a doctored photo of
+          the user) + a roadmap CTA. Shown after the first analysis. */}
+      {showSuggestions && archetype.image && (
+        <div className="mt-3 flex items-center gap-3 rounded-2xl border border-ink-700 bg-ink-850 p-3">
+          <img
+            src={archetype.image}
+            alt={`Reference build for the ${archetype.label} archetype`}
+            className="h-16 w-14 shrink-0 rounded-lg object-cover"
+          />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs text-slate-400">The build you&rsquo;re training toward</p>
+            <p className="truncate text-sm font-semibold text-slate-100">{archetype.label}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => onSend(PROGRESS_PROMPT, [])}
+            disabled={loading}
+            className="shrink-0 rounded-xl bg-accent px-3 py-2 text-xs font-semibold text-white transition hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            See your projected progress
+          </button>
+        </div>
+      )}
 
       {/* Quick-start suggestion chips */}
       {showSuggestions && (
