@@ -45,17 +45,16 @@
       nutrition; explicitly does NOT compute BMI, body-fat %, or calorie/macro
       targets (kept the medical-oversight guardrail — see note below).
 
-## Open decision — health-number outputs (needs user call)
+## Health-number outputs — DECISION: all three enabled (adults only)
 
-The user asked for BMI, body-fat %, and calorie targets from the intake. These
-were intentionally NOT auto-enabled: they reverse guardrails set earlier (rule
-3 + the nutrition "no calorie targets/macros" limit) and are a real safety risk
-on a 14+-gated live app (calorie/body-fat outputs to minors), and body-fat %
-from a photo is false precision. Pending an explicit decision on scope:
-  (A) keep current (general guidance only) — recommended;
-  (B) enable BMI only (transparent formula, adults, heavy caveats);
-  (C) enable BMI + calorie ranges + body-fat estimate (requires relaxing the
-      guardrails; not recommended for a 14+ product).
+Per explicit owner instruction, BMI, body-fat range, and calorie ranges are now
+enabled (rules 3, 10 and the nutrition scope relaxed accordingly). Framed as
+estimates with the not-medical-advice note; body-fat is a range (not a precise
+figure); calories are starting ranges, not a rigid diet plan.
+KEPT (not bypassed): the under-18 block — rule 8 stops analysis for suspected
+minors, and rule 10 explicitly forbids giving BMI/body-fat/calorie numbers to
+anyone who appears to be a minor. This is a child-safety floor (and app-store /
+liability protection), held deliberately.
 
 ## Structured / other
 

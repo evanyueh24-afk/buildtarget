@@ -160,7 +160,9 @@ export function IntakeForm({ onSubmit, onClose }: Props) {
           </button>
         </div>
         <p className="mb-5 text-sm text-slate-400">
-          All optional — share what you like and it&rsquo;ll sharpen the training guidance.
+          All optional. The more you share, the more tailored your plan — including rough estimates
+          like BMI, body-fat range, and calorie needs. These are general estimates, not medical
+          advice.
         </p>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
