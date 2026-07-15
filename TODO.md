@@ -37,6 +37,28 @@
       parent/guardian confirmation if the user appears to be a minor.
 - [x] Plain-language Privacy Policy + Terms of Service (one page each), linked
       from the footer, opened as an accessible dialog.
+- [x] Optional intake form ("+ Add your details", in the suggestions area after
+      the first analysis): age, height, weight, occupation, activity level,
+      sports background, training experience, diet — all optional; only filled
+      fields are sent, as a follow-up message, to sharpen TRAINING guidance.
+      System prompt rule 10 uses them for frequency/exercise/recovery + general
+      nutrition; explicitly does NOT compute BMI, body-fat %, or calorie/macro
+      targets (kept the medical-oversight guardrail — see note below).
+
+## Open decision — health-number outputs (needs user call)
+
+The user asked for BMI, body-fat %, and calorie targets from the intake. These
+were intentionally NOT auto-enabled: they reverse guardrails set earlier (rule
+3 + the nutrition "no calorie targets/macros" limit) and are a real safety risk
+on a 14+-gated live app (calorie/body-fat outputs to minors), and body-fat %
+from a photo is false precision. Pending an explicit decision on scope:
+  (A) keep current (general guidance only) — recommended;
+  (B) enable BMI only (transparent formula, adults, heavy caveats);
+  (C) enable BMI + calorie ranges + body-fat estimate (requires relaxing the
+      guardrails; not recommended for a 14+ product).
+
+## Structured / other
+
 - [x] Structured initial analysis: the first response now follows a fixed
       Markdown format — Current strengths, Trait scores (each 1-10, scored
       relative to the archetype's emphasis, one sentence each), Priority training

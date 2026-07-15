@@ -6,6 +6,7 @@ import { imageBlockToDataUrl } from '../lib/message';
 import { ChatBubble } from './ChatBubble';
 import { Markdown } from './Markdown';
 import { TypingIndicator } from './TypingIndicator';
+import { IntakeForm } from './IntakeForm';
 
 const MAX_ATTACHMENTS = 4;
 
@@ -51,6 +52,7 @@ export function ChatView({
   onRetry,
 }: Props) {
   const [draft, setDraft] = useState('');
+  const [intakeOpen, setIntakeOpen] = useState(false);
   const [attachments, setAttachments] = useState<ProcessedImage[]>([]);
   const [attachError, setAttachError] = useState<string | null>(null);
   const [attaching, setAttaching] = useState(false);
@@ -245,9 +247,16 @@ export function ChatView({
         </div>
       )}
 
-      {/* Quick-start suggestion chips */}
+      {/* Quick-start suggestion chips + "Add your details" intake */}
       {showSuggestions && (
         <div className="mt-3 flex flex-wrap gap-2" aria-label="Suggested questions">
+          <button
+            type="button"
+            onClick={() => setIntakeOpen(true)}
+            className="rounded-full border border-accent/60 bg-accent-soft px-3 py-1.5 text-xs font-semibold text-accent transition hover:border-accent hover:bg-ink-800"
+          >
+            + Add your details
+          </button>
           {SUGGESTIONS.map((s) => (
             <button
               key={s}
@@ -259,6 +268,16 @@ export function ChatView({
             </button>
           ))}
         </div>
+      )}
+
+      {intakeOpen && (
+        <IntakeForm
+          onClose={() => setIntakeOpen(false)}
+          onSubmit={(message) => {
+            setIntakeOpen(false);
+            onSend(message, []);
+          }}
+        />
       )}
 
       {/* Attachment previews */}
