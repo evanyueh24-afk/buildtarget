@@ -29,7 +29,7 @@ function loadFromSrc(src: string, onLoaded?: () => void): Promise<HTMLImageEleme
     };
     img.onerror = () => {
       onLoaded?.();
-      reject(new Error('Could not read that image. Try a different file.'));
+      reject(new Error('无法读取该图片，请换一个文件试试。'));
     };
     img.src = src;
   });
@@ -47,7 +47,7 @@ function encode(img: HTMLImageElement, opts: EncodeOpts): ProcessedImage {
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext('2d');
-  if (!ctx) throw new Error('Your browser could not process the image.');
+  if (!ctx) throw new Error('你的浏览器无法处理该图片。');
   ctx.drawImage(img, 0, 0, width, height);
 
   const mediaType = 'image/jpeg';

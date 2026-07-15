@@ -2,6 +2,18 @@
 
 ## Done
 
+- [x] **Full Simplified-Chinese localization (简体中文).** All UI copy is
+      translated — age gate, gender/archetype/upload screens, chat view (chips,
+      goal card, attachments, composer), intake form, Privacy/Terms overlay, and
+      every error string (client `lib/api.ts` + `lib/image.ts` and the serverless
+      proxy). Archetype labels/teasers/descriptions and athlete names are in
+      Chinese (image-filename keys stay English). `index.html` uses
+      `lang="zh-CN"` and a Chinese title/description. The analysis prompt sent to
+      the model (`lib/prompt.ts`) is Chinese, and the system prompt instructs the
+      model to **always respond in Simplified Chinese**, with the four section
+      headers (**当前优势 / 各项特征评分 / 优先训练重点 / 鼓励**), the
+      **总评：X/10** headline, and the closing disclaimer all localized. Verified
+      by rendering the full flow (desktop + mobile) in the browser.
 - [x] Gender selection step (Male / Female) before the archetype picker.
 - [x] 9 male + 9 female archetypes, gender-appropriate framing in the analysis
       prompt (no male-default V-taper assumptions).

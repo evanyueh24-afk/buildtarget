@@ -21,7 +21,7 @@ export function ArchetypeImage({ gender, label, src }: Props) {
       <div className="mb-3 overflow-hidden rounded-lg bg-ink-800">
         <img
           src={src}
-          alt={`Reference build for the ${label} archetype`}
+          alt={`「${label}」体型参考`}
           loading="lazy"
           className="aspect-[4/5] w-full object-cover"
         />
@@ -38,7 +38,7 @@ export function ArchetypeImage({ gender, label, src }: Props) {
       <svg
         viewBox="0 0 120 170"
         role="img"
-        aria-label={`${label} archetype silhouette (placeholder image)`}
+        aria-label={`「${label}」体型剪影（占位图）`}
         className="mx-auto block aspect-[4/5] w-full max-h-32 py-2 text-accent/45"
       >
         <g fill="currentColor">

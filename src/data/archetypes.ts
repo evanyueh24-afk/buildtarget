@@ -3,16 +3,16 @@
 // and chat all read from it generically.
 //
 // - `label`   — shown on the card and in the chat header.
-// - `teaser`  — the short (5-8 word) line shown on the card. UI only.
+// - `teaser`  — the short line shown on the card. UI only.
 // - `athlete` — a widely-known reference athlete for that build, shown on the
-//   card as "think <name>". UI only (never sent to the AI).
+//   card as "参考：<name>". UI only (never sent to the AI).
 // - `description` — the detailed line injected into the AI prompt. Never shown
 //   in the UI. Keep it specific enough to produce a meaningfully different
 //   response per archetype.
 //
-// Tone rule for every entry, both sets, without exception: describe athletic
-// build, muscle development, proportion, and training focus only — never
-// weight, body fat, or appearance/attractiveness.
+// Keys stay in English because they map to the reference image filenames
+// (src/assets/archetypes/<gender>-<key>.<ext>). Only the display/prompt text is
+// localized.
 
 export type Gender = 'male' | 'female';
 
@@ -22,173 +22,156 @@ export interface Archetype {
   teaser: string;
   athlete: string;
   description: string;
-  /**
-   * Optional reference image (URL or imported asset path) shown on the card.
-   * Left unset for every archetype today, so cards render a rights-clean,
-   * on-brand silhouette placeholder instead. To use a real photo you have the
-   * rights to, set this to its URL/path — the card renders it automatically,
-   * no other change needed. Do NOT point this at scraped/unlicensed athlete
-   * photos: it's a deployed product and those carry copyright + likeness risk.
-   */
   image?: string;
 }
 
 export const GENDERS: readonly { value: Gender; label: string }[] = [
-  { value: 'male', label: 'Male' },
-  { value: 'female', label: 'Female' },
+  { value: 'male', label: '男性' },
+  { value: 'female', label: '女性' },
 ] as const;
 
 export function genderLabel(gender: Gender): string {
-  return gender === 'male' ? 'Male' : 'Female';
+  return gender === 'male' ? '男性' : '女性';
 }
 
 const MALE: readonly Archetype[] = [
   {
     key: 'swimmer',
-    label: 'Swimmer',
-    teaser: 'Broad shoulders, tapered waist, lean',
-    athlete: 'Adam Peaty',
+    label: '游泳运动员',
+    teaser: '宽肩细腰，精瘦修长',
+    athlete: '亚当·皮蒂',
     description:
-      'broad shoulders and lats, tapered waist, long lean muscle, strong upper back and core, low bulk in legs relative to upper body',
+      '宽肩阔背、腰部收窄、肌肉修长精瘦、上背和核心强壮、相对上半身腿部块头较小',
   },
   {
     key: 'sprinter',
-    label: 'Sprinter',
-    teaser: 'Powerful legs, lean and explosive',
-    athlete: 'Usain Bolt',
+    label: '短跑运动员',
+    teaser: '强腿爆发，精瘦有力',
+    athlete: '尤塞恩·博尔特',
     description:
-      'powerful glutes and hamstrings, muscular but not bulky quads, lean upper body, strong core, athletic low body fat',
+      '强健的臀部和腘绳肌、发达但不臃肿的股四头肌、精瘦的上半身、强壮的核心、运动员般的低体脂',
   },
   {
     key: 'gymnast',
-    label: 'Gymnast',
-    teaser: 'Dense, compact, exceptional relative strength',
-    athlete: 'Kohei Uchimura',
+    label: '体操运动员',
+    teaser: '紧实致密，相对力量出色',
+    athlete: '内村航平',
     description:
-      'dense, compact muscle everywhere, exceptional relative strength, strong forearms and shoulders, very low body fat, minimal bulk',
+      '全身肌肉紧实致密、出色的相对力量、前臂和肩部强壮、极低体脂、块头精练不臃肿',
   },
   {
     key: 'climber',
-    label: 'Climber',
-    teaser: 'Wiry, light, strong grip and back',
-    athlete: 'Alex Honnold',
+    label: '攀岩运动员',
+    teaser: '精瘦轻盈，握力背部强',
+    athlete: '亚历克斯·霍诺德',
     description:
-      'lean and light overall, strong forearms and back, wiry muscle, minimal excess mass anywhere, strong grip and core',
+      '整体精瘦轻盈、前臂和背部强壮、肌肉如线条般紧实、全身几乎没有多余体重、握力和核心强',
   },
   {
     key: 'bodybuilder',
-    label: 'Classic bodybuilder',
-    teaser: 'Maximum muscle mass and symmetry',
-    athlete: 'Chris Bumstead',
+    label: '古典健美运动员',
+    teaser: '最大肌肉量与对称',
+    athlete: '克里斯·邦斯特德',
     description:
-      'maximum overall muscle mass and symmetry across all muscle groups, wide shoulders, small waist, very developed arms and legs',
+      '各肌群整体肌肉量和对称性最大化、肩宽腰细、手臂和腿部非常发达',
   },
   {
     key: 'powerlifter',
-    label: 'Powerlifter',
-    teaser: 'Thick, dense, built for raw strength',
-    athlete: 'Eddie Hall',
+    label: '力量举运动员',
+    teaser: '厚实致密，原始力量',
+    athlete: '埃迪·霍尔',
     description:
-      'dense functional mass through the posterior chain, thick back and legs, strong midsection, built for raw strength over aesthetics',
+      '后链密实的功能性肌肉、厚实的背部和腿部、强壮的中段、为原始力量而非美观而生',
   },
   {
     key: 'martial-artist',
-    label: 'Martial artist',
-    teaser: 'Lean, explosive, agile, functional',
-    athlete: 'Conor McGregor',
+    label: '格斗运动员',
+    teaser: '精瘦爆发，敏捷实用',
+    athlete: '康纳·麦格雷戈',
     description:
-      'lean, explosive muscle, strong hips and core rotation, conditioned and agile, functional strength over size',
+      '精瘦而具爆发力的肌肉、强壮的髋部和核心旋转、体能好且敏捷、功能性力量优先于块头',
   },
   {
     key: 'rower',
-    label: 'Rower',
-    teaser: 'Strong legs and back, high engine',
-    athlete: 'Steve Redgrave',
+    label: '赛艇运动员',
+    teaser: '强腿强背，心肺出色',
+    athlete: '史蒂夫·雷德格雷夫',
     description:
-      'very strong and thick legs, powerful back and glutes, high overall muscle mass with strong cardiovascular conditioning',
+      '非常强壮厚实的腿部、强健的背部和臀部、整体肌肉量大且心肺耐力强',
   },
   {
     key: 'football-rugby',
-    label: 'Football/Rugby',
-    teaser: 'Thick, powerful, built for contact',
-    athlete: 'Derrick Henry',
+    label: '橄榄球运动员',
+    teaser: '厚实有力，为对抗而生',
+    athlete: '德里克·亨利',
     description:
-      'thick, powerful frame, strong legs and glutes, dense muscular back and shoulders, built for contact and explosive power, higher overall mass than most other archetypes',
+      '厚实而有力的身架、强壮的腿部和臀部、致密的背部和肩部肌肉、为对抗和爆发力而生、整体块头高于多数其他类型',
   },
 ] as const;
 
 const FEMALE: readonly Archetype[] = [
   {
     key: 'swimmer',
-    label: 'Swimmer',
-    teaser: 'Strong back and lats, lean, powerful legs',
-    athlete: 'Katie Ledecky',
-    description:
-      'broad shoulders and lats relative to frame, strong core and back, lean, powerful legs',
+    label: '游泳运动员',
+    teaser: '背强精瘦，腿部有力',
+    athlete: '凯蒂·莱德基',
+    description: '相对身架宽阔的肩部和背阔肌、强壮的核心和背部、精瘦、腿部有力',
   },
   {
     key: 'diver',
-    label: 'Diver',
-    teaser: 'Strong core and shoulders, powerful legs',
-    athlete: 'Chen Ruolin',
-    description:
-      'strong core and shoulders, lean powerful legs, excellent body control and balance',
+    label: '跳水运动员',
+    teaser: '核心肩强，腿部有力',
+    athlete: '陈若琳',
+    description: '强壮的核心和肩部、精瘦而有力的腿部、出色的身体控制与平衡',
   },
   {
     key: 'ice-skater',
-    label: 'Ice skater',
-    teaser: 'Strong glutes and quads, balanced control',
-    athlete: 'Michelle Kwan',
-    description:
-      'strong glutes and quads, excellent balance and core control, lean powerful lower body',
+    label: '花样滑冰运动员',
+    teaser: '臀腿强壮，平衡出色',
+    athlete: '关颖珊',
+    description: '强壮的臀部和股四头肌、出色的平衡与核心控制、精瘦有力的下半身',
   },
   {
     key: 'pilates-barre',
-    label: 'Pilates/Barre',
-    teaser: 'Strong core, control, functional strength',
-    athlete: 'Nadia Comăneci',
-    description:
-      'strong core and stabilizer muscles, excellent posture and control, lean functional strength',
+    label: '普拉提／把杆',
+    teaser: '核心稳定，功能力量',
+    athlete: '纳迪娅·科马内奇',
+    description: '强壮的核心和稳定肌群、优秀的体态与控制、精瘦的功能性力量',
   },
   {
     key: 'functional-fitness',
-    label: 'Gym/Functional fitness',
-    teaser: 'Balanced full-body strength, high capacity',
-    athlete: 'Tia-Clair Toomey',
-    description:
-      'balanced full-body muscle development, high work capacity, strong posterior chain',
+    label: '健身／功能训练',
+    teaser: '全身均衡，训练容量高',
+    athlete: '蒂亚-克莱尔·图米',
+    description: '全身均衡的肌肉发展、高训练容量、强壮的后链',
   },
   {
     key: 'dancer',
-    label: 'Dancer',
-    teaser: 'Long lean muscle, core control, posture',
-    athlete: 'Misty Copeland',
-    description:
-      'long lean muscle, exceptional core control and balance, strong legs and posture',
+    label: '舞者',
+    teaser: '修长精瘦，核心体态',
+    athlete: '米斯蒂·科普兰',
+    description: '修长精瘦的肌肉、卓越的核心控制与平衡、强壮的腿部与体态',
   },
   {
     key: 'volleyball',
-    label: 'Volleyball',
-    teaser: 'Strong shoulders, powerful explosive legs',
-    athlete: 'Kerri Walsh Jennings',
-    description:
-      'strong shoulders and back, powerful legs, athletic explosive build',
+    label: '排球运动员',
+    teaser: '肩背强壮，爆发腿部',
+    athlete: '凯丽·沃尔什·詹宁斯',
+    description: '强壮的肩部和背部、有力的腿部、运动而具爆发力的身型',
   },
   {
     key: 'sprinter-track',
-    label: 'Sprinter/Track',
-    teaser: 'Powerful glutes and hamstrings, explosive',
-    athlete: 'Allyson Felix',
-    description:
-      'strong glutes and hamstrings, athletic lean build, powerful explosive legs, strong core',
+    label: '短跑／田径运动员',
+    teaser: '臀腿有力，爆发精瘦',
+    athlete: '阿利森·菲利克斯',
+    description: '强壮的臀部和腘绳肌、运动而精瘦的身型、爆发有力的腿部、强壮的核心',
   },
   {
     key: 'martial-artist-boxer',
-    label: 'Martial artist/Boxer',
-    teaser: 'Lean, explosive, agile, conditioned',
-    athlete: 'Ronda Rousey',
-    description:
-      'lean, explosive, strong hips and core rotation, agile and conditioned',
+    label: '格斗／拳击运动员',
+    teaser: '精瘦爆发，敏捷体能',
+    athlete: '龙达·罗西',
+    description: '精瘦、有爆发力、强壮的髋部和核心旋转、敏捷且体能好',
   },
 ] as const;
 

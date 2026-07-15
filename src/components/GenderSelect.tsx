@@ -12,12 +12,12 @@ export function GenderSelect({ selected, onSelect }: Props) {
     <section aria-labelledby="gender-heading" className="mx-auto w-full max-w-xl py-6 sm:py-12">
       <h1
         id="gender-heading"
-        className="text-balance text-4xl font-bold leading-[1.05] tracking-tight text-slate-50 sm:text-6xl"
+        className="text-balance text-4xl font-bold leading-[1.15] tracking-tight text-slate-50 sm:text-6xl"
       >
-        Train toward a physique.
+        朝理想体型训练。
       </h1>
       <p className="mt-5 max-w-md text-base leading-relaxed text-slate-400 sm:text-lg">
-        Choose your training focus to begin.
+        选择你的训练方向即可开始。
       </p>
 
       <div className="mt-14 grid grid-cols-2 gap-4 sm:mt-20">

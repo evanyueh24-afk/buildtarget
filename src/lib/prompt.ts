@@ -20,22 +20,22 @@ export function buildAnalysisMessage(
   userImage: ProcessedImage,
   referenceImage?: ProcessedImage,
 ): ApiMessage {
-  const focus = genderLabel(gender).toLowerCase();
+  const focus = genderLabel(gender);
 
   const content: ContentBlock[] = [imageBlockOf(userImage)];
   if (referenceImage) content.push(imageBlockOf(referenceImage));
 
   const intro = referenceImage
-    ? `I am training as a ${focus} athlete and want to build a physique like the "${archetype.label}" archetype — ${archetype.description}.
+    ? `我是一名${focus}训练者，想练成类似「${archetype.label}」范本的体型——${archetype.description}。
 
-The FIRST image is a photo of my current build. The SECOND image is a reference photo representing the target "${archetype.label}" build. Visually compare my build to the reference, identify the most relevant gaps, and recommend specific gym exercises and training focus areas to move toward it. Use the text description as additional context, but base your comparison on what you actually see in the two photos.`
-    : `I am training as a ${focus} athlete and want to build a physique like the "${archetype.label}" archetype — ${archetype.description}.
+第一张图是我当前体型的照片。第二张图是代表目标「${archetype.label}」体型的参考照片。请从视觉上把我的体型与参考照片进行对比，找出最关键的差距，并推荐具体的健身动作和训练重点，帮助我朝这个方向发展。文字描述可作为补充背景，但你的对比应以你在两张照片中实际看到的内容为依据。`
+    : `我是一名${focus}训练者，想练成类似「${archetype.label}」范本的体型——${archetype.description}。
 
-Attached is a photo of my current build. Compare my current physique to that target archetype, identify the most relevant gaps, and recommend specific gym exercises and training focus areas to move toward it.`;
+附上的是我当前体型的照片。请把我当前的体型与这个目标范本进行对比，找出最关键的差距，并推荐具体的健身动作和训练重点，帮助我朝这个方向发展。`;
 
   const text = `${intro}
 
-Frame your comparison and recommendations for a ${focus} athlete's physique and natural proportions — do not assume male-default conventions like a "V-taper" when they don't apply. Comment only on muscle development, proportion, and training-relevant observations; never on weight, body fat, or appearance.`;
+请以${focus}运动员的体型和自然比例为出发点来给出对比和建议——在不适用时，不要套用「V 字倒三角」等以男性为默认的标准。只评论肌肉发展、比例以及与训练相关的观察；绝不评论体重、体脂或外貌。`;
 
   content.push({ type: 'text', text });
   return { role: 'user', content };

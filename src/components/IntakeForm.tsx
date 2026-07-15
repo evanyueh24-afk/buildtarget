@@ -28,14 +28,14 @@ const EMPTY: Fields = {
 };
 
 const LABELS: Record<keyof Fields, string> = {
-  age: 'Age',
-  height: 'Height',
-  weight: 'Weight',
-  occupation: 'Occupation',
-  activity: 'Activity level',
-  sports: 'Sports background',
-  experience: 'Training experience',
-  diet: 'Diet',
+  age: '年龄',
+  height: '身高',
+  weight: '体重',
+  occupation: '职业',
+  activity: '活动水平',
+  sports: '运动背景',
+  experience: '训练经验',
+  diet: '饮食',
 };
 
 /** Optional intake form (accessible dialog). Collects context that sharpens the
@@ -94,9 +94,9 @@ export function IntakeForm({ onSubmit, onClose }: Props) {
       onClose();
       return;
     }
-    const message = `Here are some details about me to help refine the analysis:\n${provided.join(
+    const message = `以下是我的一些资料，帮助你更精准地分析：\n${provided.join(
       '\n',
-    )}\n\nPlease factor these into your training recommendations and general guidance.`;
+    )}\n\n请在给出训练建议和总体指导时，把这些信息一并考虑进去。`;
     onSubmit(message);
   }
 
@@ -122,7 +122,7 @@ export function IntakeForm({ onSubmit, onClose }: Props) {
         onChange={(e) => set(key, e.target.value)}
         className="w-full rounded-lg border border-ink-700 bg-ink-950 px-3 py-2 text-sm text-slate-100 focus:border-accent focus:outline-none"
       >
-        <option value="">Prefer not to say</option>
+        <option value="">不便透露</option>
         {options.map((o) => (
           <option key={o} value={o}>
             {o}
@@ -149,43 +149,41 @@ export function IntakeForm({ onSubmit, onClose }: Props) {
       >
         <div className="mb-1 flex items-center justify-between gap-4">
           <h2 id="intake-title" className="text-xl font-semibold tracking-tight text-slate-50">
-            Add your details
+            补充你的资料
           </h2>
           <button
             type="button"
             onClick={onClose}
             className="rounded-md border border-ink-700 px-3 py-1.5 text-sm font-medium text-slate-200 hover:border-accent hover:text-accent"
           >
-            Cancel
+            取消
           </button>
         </div>
         <p className="mb-5 text-sm text-slate-400">
-          All optional. The more you share, the more tailored your plan — including rough estimates
-          like BMI, body-fat range, and calorie needs. These are general estimates, not medical
-          advice.
+          全部选填。你提供得越多，方案就越贴合你——包括 BMI、体脂范围、热量需求等大致估算。这些均为一般性估算，并非医疗建议。
         </p>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {textInput('age', 'e.g. 27', firstRef)}
-          {textInput('occupation', 'e.g. desk job / nurse')}
-          {textInput('height', "e.g. 180 cm or 5'11\"")}
-          {textInput('weight', 'e.g. 75 kg or 165 lb')}
-          {selectInput('activity', ['Sedentary', 'Lightly active', 'Active', 'Very active'])}
+          {textInput('age', '例如 27', firstRef)}
+          {textInput('occupation', '例如 办公室 / 护士')}
+          {textInput('height', '例如 180 cm')}
+          {textInput('weight', '例如 75 kg')}
+          {selectInput('activity', ['久坐', '轻度活动', '活跃', '非常活跃'])}
           {selectInput('experience', [
-            'Beginner (< 1 yr)',
-            'Intermediate (1-3 yr)',
-            'Advanced (3+ yr)',
+            '初学者（不足 1 年）',
+            '中级（1-3 年）',
+            '高级（3 年以上）',
           ])}
         </div>
         <div className="mt-3 grid grid-cols-1 gap-3">
-          {textInput('sports', 'e.g. played rugby, run 5k weekly')}
+          {textInput('sports', '例如 打过橄榄球，每周跑 5 公里')}
           <label className="block">
-            <span className="mb-1 block text-xs font-medium text-slate-400">Diet</span>
+            <span className="mb-1 block text-xs font-medium text-slate-400">饮食</span>
             <textarea
               value={fields.diet}
               onChange={(e) => set('diet', e.target.value)}
               rows={2}
-              placeholder="How you currently eat, any preferences (general — no need for exact numbers)"
+              placeholder="你目前的饮食情况、有无偏好（大致说明即可，无需精确数字）"
               className="w-full resize-none rounded-lg border border-ink-700 bg-ink-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-accent focus:outline-none"
             />
           </label>
@@ -196,7 +194,7 @@ export function IntakeForm({ onSubmit, onClose }: Props) {
             type="submit"
             className="rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-accent-hover"
           >
-            Use these details
+            使用这些资料
           </button>
         </div>
       </form>

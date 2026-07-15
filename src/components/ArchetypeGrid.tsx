@@ -20,7 +20,7 @@ export function ArchetypeGrid({
     <section aria-labelledby="archetype-heading" className="mx-auto w-full max-w-3xl py-4 sm:py-8">
       <div className="mb-5 flex items-center justify-between gap-3">
         <p className="text-xs font-medium uppercase tracking-widest text-slate-500">
-          Training focus ·{' '}
+          训练方向 ·{' '}
           <span className="text-slate-300">{genderLabel(gender)}</span>
         </p>
         <button
@@ -28,7 +28,7 @@ export function ArchetypeGrid({
           onClick={onChangeGender}
           className="rounded-md px-2 py-1 text-sm font-medium text-accent hover:text-accent-hover hover:underline"
         >
-          Change
+          更改
         </button>
       </div>
 
@@ -36,9 +36,9 @@ export function ArchetypeGrid({
         id="archetype-heading"
         className="text-balance text-3xl font-bold tracking-tight text-slate-50 sm:text-4xl"
       >
-        Pick a target physique.
+        选择一个目标体型。
       </h2>
-      <p className="mt-3 mb-10 text-base text-slate-400">The build you&rsquo;re training toward.</p>
+      <p className="mt-3 mb-10 text-base text-slate-400">你想要练成的身型。</p>
 
       <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4" role="list">
         {archetypes.map((a) => {
@@ -58,7 +58,7 @@ export function ArchetypeGrid({
                 <ArchetypeImage gender={gender} label={a.label} src={a.image} />
                 <span className="text-base font-semibold text-slate-100">{a.label}</span>
                 <span className="mt-1 text-xs leading-snug text-slate-400">{a.teaser}</span>
-                <span className="mt-2 text-xs font-medium text-accent">think {a.athlete}</span>
+                <span className="mt-2 text-xs font-medium text-accent">参考：{a.athlete}</span>
               </button>
             </li>
           );

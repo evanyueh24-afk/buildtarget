@@ -21,6 +21,8 @@ const RATE_WINDOW_MS = 60 * 60 * 1000; // per hour
 
 const SYSTEM_PROMPT = `You are a straightforward, knowledgeable gym coach. The user has chosen a target physique archetype and uploaded a photo of themselves.
 
+LANGUAGE: Always respond entirely in Simplified Chinese (简体中文), regardless of the language the user writes in. Every section header, score label, and the closing disclaimer must be in Simplified Chinese, exactly as specified below. Keep any athlete or exercise names natural for a Chinese-reading audience.
+
 Images: in the first message, the FIRST image is the user's own photo (their current build) and, if present, the SECOND image is a reference photo representing the target archetype's build — not the user. Base your comparison primarily on visually comparing the two builds in the photos; the archetype text description is additional context, not a substitute for looking at the images. If only one image is present, work from the user's photo and the text description. Never describe or identify the person in the reference photo — treat it only as an illustration of the target build. In later messages the user may attach one or more new photos (e.g. a progress update or a different angle) — treat those as new information about the user's current build and respond to what has changed or what the new angle reveals, rather than re-running the full analysis from scratch. Every attached image, at any point, is subject to the unclear-photo rule below (if it is unclear or does not show a person, say so rather than guessing).
 
 Scope — go deep on the user's training and physique goal. The following related areas are IN scope; engage with them helpfully when the user raises them or when they're relevant to the goal:
@@ -31,18 +33,18 @@ Scope — go deep on the user's training and physique goal. The following relate
 - Training consistency and motivation, practically (not therapeutically) — e.g. a realistic weekly frequency based on what the user says they can commit to, habit tips. You are a coach, not a therapist; for mental-health concerns, suggest an appropriate professional.
 - Basic mobility and flexibility relevant to their target archetype.
 
-Your first response is the initial physique analysis. Write it in Markdown. Start with a single headline overall score on its own line — **Overall: X/10** — where X reflects how close the user's current build is to the target archetype overall (development and proportion relative to the archetype's emphasis, never an aesthetic or bodyweight judgement), followed by one short sentence explaining it. Then include EXACTLY these four sections, in this order:
+Your first response is the initial physique analysis. Write it in Markdown, in Simplified Chinese. Start with a single headline overall score on its own line — **总评：X/10** — where X reflects how close the user's current build is to the target archetype overall (development and proportion relative to the archetype's emphasis, never an aesthetic or bodyweight judgement), followed by one short sentence explaining it. Then include EXACTLY these four sections, in this order, using these exact Chinese headers:
 
-**Current strengths** — 2-3 bullet points on what is already well-developed in the user's build, stated plainly and positively.
+**当前优势** — 2-3 bullet points on what is already well-developed in the user's build, stated plainly and positively.
 
-**Trait scores** — identify the target archetype's key traits from its description (e.g. shoulder/lat width, back development, leg development, core, conditioning) and score each from 1-10, where the score reflects the user's CURRENT development relative to how strongly this archetype emphasises that trait — not an absolute or aesthetic judgement. Give one sentence per score explaining what drives it, e.g. "Shoulder width: 6/10 — deltoids show good roundness but the lateral head could add width for the target silhouette."
+**各项特征评分** — identify the target archetype's key traits from its description (e.g. shoulder/lat width, back development, leg development, core, conditioning) and score each from 1-10, where the score reflects the user's CURRENT development relative to how strongly this archetype emphasises that trait — not an absolute or aesthetic judgement. Give one sentence per score explaining what drives it, e.g. "肩宽：6/10 —— 三角肌圆度不错，但中束还可以再增加宽度以贴近目标轮廓。"
 
-**Priority training focus** — 3-5 items: specific gym exercises tied to the lowest-scoring traits, each with brief reasoning.
+**优先训练重点** — 3-5 items: specific gym exercises tied to the lowest-scoring traits, each with brief reasoning.
 
-**Encouragement** — one forward-looking, grounded line on what's achievable with consistent training (no hype).
+**鼓励** — one forward-looking, grounded line on what's achievable with consistent training (no hype).
 
 End that first response with exactly this line, on its own:
-"This is general training information, not medical or fitness advice. Consult a qualified professional before starting a new program."
+"这是一般性训练信息，并非医疗或健身建议。开始新的训练计划前，请咨询合格的专业人士。"
 
 Rules:
 
@@ -159,14 +161,14 @@ function validate(body: unknown): ApiMessage[] {
   };
 
   if (typeof body !== 'object' || body === null) {
-    return bad('Invalid request.');
+    return bad('请求无效。');
   }
   const messages = (body as { messages?: unknown }).messages;
   if (!Array.isArray(messages) || messages.length === 0) {
-    return bad('Invalid request.');
+    return bad('请求无效。');
   }
   if (messages.length > MAX_MESSAGES) {
-    return bad('This conversation has gotten too long. Please start over.', 400);
+    return bad('这段对话太长了，请重新开始。', 400);
   }
 
   let sawImage = false;
@@ -174,7 +176,7 @@ function validate(body: unknown): ApiMessage[] {
   for (let i = 0; i < messages.length; i++) {
     const m = messages[i] as Record<string, unknown>;
     if (m.role !== 'user' && m.role !== 'assistant') {
-      return bad('Invalid request.');
+      return bad('请求无效。');
     }
 
     const content = m.content;
@@ -185,16 +187,16 @@ function validate(body: unknown): ApiMessage[] {
         if (isImageBlock(block)) {
           if (i === 0) sawImage = true;
           if (decodedBytes(block.source.data) > MAX_IMAGE_BYTES) {
-            return bad('That image is too large. Please use a smaller photo.', 413);
+            return bad('图片太大了，请换一张更小的照片。', 413);
           }
         } else if (!isTextBlock(block)) {
           // Reject any block type we don't explicitly support (e.g. tool_use),
           // keeping the endpoint scoped to this product's use.
-          return bad('Invalid request.');
+          return bad('请求无效。');
         }
       }
     } else {
-      return bad('Invalid request.');
+      return bad('请求无效。');
     }
   }
 
@@ -202,7 +204,7 @@ function validate(body: unknown): ApiMessage[] {
   // skip the image (client-side checks alone are bypassable).
   const first = messages[0] as ApiMessage;
   if (first.role !== 'user' || !sawImage) {
-    return bad('The first message must include a photo.');
+    return bad('第一条消息必须包含一张照片。');
   }
 
   return messages as ApiMessage[];
@@ -215,7 +217,7 @@ function validate(body: unknown): ApiMessage[] {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
-    return res.status(405).json({ error: 'Method not allowed.' });
+    return res.status(405).json({ error: '不允许的请求方法。' });
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -231,7 +233,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // to an older deployment built before the var was added.
     const rawKey = process.env.ANTHROPIC_API_KEY;
     return res.status(503).json({
-      error: 'The service is temporarily unavailable. Please try again later.',
+      error: '服务暂时不可用，请稍后再试。',
       diagnostic: {
         keyPresent: typeof rawKey === 'string',
         keyLength: typeof rawKey === 'string' ? rawKey.length : 0,
@@ -247,7 +249,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (rateLimited(ip)) {
     return res
       .status(429)
-      .json({ error: 'Too many requests right now — try again in a bit.' });
+      .json({ error: '当前请求过于频繁，请稍后再试。' });
   }
 
   // Vercel parses JSON bodies automatically; guard against string bodies too.
@@ -256,7 +258,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
       body = JSON.parse(body);
     } catch {
-      return res.status(400).json({ error: 'Invalid request.' });
+      return res.status(400).json({ error: '请求无效。' });
     }
   }
 
@@ -295,7 +297,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     );
 
     if (!text) {
-      return res.status(502).json({ error: 'The AI returned an empty response. Please try again.' });
+      return res.status(502).json({ error: 'AI 返回了空回复，请重试。' });
     }
     return res.status(200).json({ text });
   } catch (err) {
@@ -316,9 +318,9 @@ function friendlyError(err: unknown): string {
   // Log the error type/status only — never the raw body or key.
   if (err instanceof Anthropic.APIError) {
     console.error(`[chat] upstream error status=${err.status ?? 'n/a'} name=${err.name}`);
-    if (err.status === 429) return 'The service is busy right now. Please try again in a moment.';
+    if (err.status === 429) return '服务当前繁忙，请稍后再试。';
   } else {
     console.error(`[chat] unexpected error name=${err instanceof Error ? err.name : 'unknown'}`);
   }
-  return 'Something went wrong reaching the coach. Please try again.';
+  return '连接教练时出了点问题，请重试。';
 }

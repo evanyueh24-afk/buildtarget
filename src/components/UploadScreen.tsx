@@ -28,7 +28,7 @@ export function UploadScreen({
     setError(null);
 
     if (!isAcceptedImage(file)) {
-      setError('That file type isn’t supported. Please upload a JPG, PNG, or WEBP image.');
+      setError('不支持该文件类型。请上传 JPG、PNG 或 WEBP 图片。');
       return;
     }
 
@@ -37,7 +37,7 @@ export function UploadScreen({
       const image = await processImage(file);
       onImageReady(image);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not process that image.');
+      setError(e instanceof Error ? e.message : '无法处理该图片。');
       setWorking(false);
     }
   }
@@ -52,7 +52,7 @@ export function UploadScreen({
     <section aria-labelledby="upload-heading" className="mx-auto w-full max-w-xl">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm text-slate-400">
-          Target: <span className="font-semibold text-slate-100">{archetype.label}</span>
+          目标：<span className="font-semibold text-slate-100">{archetype.label}</span>
           <span className="mx-1 text-slate-600">·</span>
           <span className="font-semibold text-slate-100">{genderLabel(gender)}</span>
         </p>
@@ -62,7 +62,7 @@ export function UploadScreen({
             onClick={onChangeArchetype}
             className="rounded-md px-2 py-1 text-sm font-medium text-accent hover:text-accent-hover hover:underline"
           >
-            Change archetype
+            更改体型
           </button>
           <span aria-hidden="true" className="text-slate-600">·</span>
           <button
@@ -70,16 +70,16 @@ export function UploadScreen({
             onClick={onChangeGender}
             className="rounded-md px-2 py-1 text-sm font-medium text-accent hover:text-accent-hover hover:underline"
           >
-            Change gender
+            更改性别
           </button>
         </div>
       </div>
 
       <h2 id="upload-heading" className="mb-1 text-2xl font-semibold tracking-tight">
-        Upload a photo to start
+        上传照片开始
       </h2>
       <p className="mb-5 text-sm text-slate-400">
-        Full-body, good lighting, form-fitting or no shirt works best for an accurate comparison.
+        全身、光线充足、贴身或赤裸上身的照片，能带来更准确的对比。
       </p>
 
       <button
@@ -92,7 +92,7 @@ export function UploadScreen({
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
         disabled={working}
-        aria-label="Upload a photo of yourself: drag and drop, or activate to browse. Accepts JPG, PNG, or WEBP."
+        aria-label="上传你的照片：拖放到此处，或点击以浏览选择。支持 JPG、PNG 或 WEBP。"
         className={[
           'flex w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed px-6 py-14 text-center transition',
           dragging ? 'border-accent bg-accent-soft' : 'border-ink-600 bg-ink-850 hover:border-accent',
@@ -103,9 +103,9 @@ export function UploadScreen({
           {working ? '⏳' : '📷'}
         </span>
         <span className="text-base font-medium text-slate-100">
-          {working ? 'Preparing your photo…' : 'Drag & drop or tap to choose a photo'}
+          {working ? '正在处理照片…' : '拖放照片，或点击选择照片'}
         </span>
-        <span className="text-xs text-slate-500">JPG, PNG, or WEBP</span>
+        <span className="text-xs text-slate-500">JPG、PNG 或 WEBP</span>
       </button>
 
       <input
@@ -127,8 +127,7 @@ export function UploadScreen({
       )}
 
       <p className="mt-5 text-xs leading-relaxed text-slate-500">
-        Your photo is sent to the AI for analysis and isn&rsquo;t stored on our servers or in your
-        browser. Refreshing the page will require re-uploading it.
+        你的照片会发送给 AI 进行分析，不会存储在我们的服务器或你的浏览器中。刷新页面后需要重新上传。
       </p>
     </section>
   );

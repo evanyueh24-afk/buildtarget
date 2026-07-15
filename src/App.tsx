@@ -58,7 +58,7 @@ export default function App() {
       setTurns([...history, { role: 'assistant', content: text, ts: Date.now() }]);
     } catch (e) {
       // Keep the conversation intact so the user can retry the same turn.
-      setError(e instanceof Error ? e.message : 'Something went wrong. Please try again.');
+      setError(e instanceof Error ? e.message : '出了点问题，请重试。');
     } finally {
       setLoading(false);
     }
@@ -149,7 +149,7 @@ export default function App() {
             onClick={reset}
             className="rounded-md border border-ink-700 px-3 py-1.5 text-sm font-medium text-slate-200 hover:border-accent hover:text-accent"
           >
-            Start over
+            重新开始
           </button>
         )}
       </header>
@@ -209,8 +209,7 @@ export default function App() {
 
       <footer className="shrink-0 border-t border-ink-800 px-4 py-3 text-center text-xs text-slate-400">
         <p>
-          BuildTarget gives general training information, not medical or fitness advice. Consult a
-          qualified professional before starting a new training program.
+          BuildTarget 提供一般训练信息，并非医疗或健身专业建议。开始新的训练计划前，请咨询合格的专业人士。
         </p>
         <p className="mt-1">
           <button
@@ -218,7 +217,7 @@ export default function App() {
             onClick={() => setLegal('privacy')}
             className="font-medium text-slate-400 underline hover:text-accent"
           >
-            Privacy Policy
+            隐私政策
           </button>
           <span className="mx-2 text-slate-600">·</span>
           <button
@@ -226,7 +225,7 @@ export default function App() {
             onClick={() => setLegal('terms')}
             className="font-medium text-slate-400 underline hover:text-accent"
           >
-            Terms of Service
+            服务条款
           </button>
         </p>
       </footer>

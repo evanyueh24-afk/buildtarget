@@ -13,17 +13,13 @@ const MAX_ATTACHMENTS = 4;
 // Quick-start chips that surface the wider (but still bounded) scope so users
 // discover it rather than guessing. Shown after the first analysis, until the
 // user sends their first follow-up.
-const SUGGESTIONS = [
-  "How's my recovery?",
-  'Any injuries to work around?',
-  'What should I eat around training?',
-];
+const SUGGESTIONS = ['我的恢复情况如何？', '有需要规避的伤病吗？', '训练前后应该怎么吃？'];
 
-// Sent when the user taps "See your projected progress". Deliberately a text
-// roadmap grounded in training outcomes — NOT an image or a prediction of what
-// the person will look like (see the note in the summary / system prompt).
+// Sent when the user taps the progress CTA. Deliberately a text roadmap grounded
+// in training outcomes — NOT an image or a prediction of what the person will
+// look like (see the note in the summary / system prompt).
 const PROGRESS_PROMPT =
-  'Give me a realistic projected progress roadmap toward this archetype: what training changes and milestones I can expect at roughly 3, 6, and 12 months of consistent, well-programmed training. Focus on strength, muscle development, and proportion, and be honest about what is realistic in each timeframe.';
+  '请给我一个朝这个体型努力的现实进度路线图：在坚持、科学的训练下，大约 3、6、12 个月分别能看到哪些训练变化和阶段性成果。请聚焦于力量、肌肉发展和比例，并如实说明每个阶段实际可以达到的程度。';
 
 interface Props {
   archetype: Archetype;
@@ -38,7 +34,7 @@ interface Props {
 }
 
 function formatTime(ts: number): string {
-  return new Date(ts).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  return new Date(ts).toLocaleTimeString('zh-CN', { hour: 'numeric', minute: '2-digit' });
 }
 
 export function ChatView({
@@ -68,7 +64,7 @@ export function ChatView({
     setAttachError(null);
     const room = MAX_ATTACHMENTS - attachments.length;
     if (room <= 0) {
-      setAttachError(`You can attach up to ${MAX_ATTACHMENTS} images per message.`);
+      setAttachError(`每条消息最多可附带 ${MAX_ATTACHMENTS} 张图片。`);
       return;
     }
     const picked = Array.from(files).slice(0, room);
@@ -77,17 +73,17 @@ export function ChatView({
       const processed: ProcessedImage[] = [];
       for (const file of picked) {
         if (!isAcceptedImage(file)) {
-          setAttachError('Only JPG, PNG, or WEBP images are supported.');
+          setAttachError('仅支持 JPG、PNG 或 WEBP 图片。');
           continue;
         }
         processed.push(await processImage(file));
       }
       if (processed.length) setAttachments((prev) => [...prev, ...processed]);
       if (files.length > room) {
-        setAttachError(`Only ${MAX_ATTACHMENTS} images per message; extra files were skipped.`);
+        setAttachError(`每条消息最多 ${MAX_ATTACHMENTS} 张图片，多余的已跳过。`);
       }
     } catch {
-      setAttachError('Could not process one of those images.');
+      setAttachError('无法处理其中某张图片。');
     } finally {
       setAttaching(false);
       if (fileRef.current) fileRef.current.value = '';
@@ -116,9 +112,9 @@ export function ChatView({
   }
 
   return (
-    <section aria-label="Coaching conversation" className="mx-auto flex h-full w-full max-w-2xl flex-col">
+    <section aria-label="教练对话" className="mx-auto flex h-full w-full max-w-2xl flex-col">
       <div className="mb-3 shrink-0 text-sm text-slate-400">
-        Target physique: <span className="font-semibold text-slate-100">{archetype.label}</span>
+        目标体型：<span className="font-semibold text-slate-100">{archetype.label}</span>
         <span className="mx-1 text-slate-600">·</span>
         <span className="font-semibold text-slate-100">{genderLabel(gender)}</span>
       </div>
@@ -127,7 +123,7 @@ export function ChatView({
         className="flex-1 space-y-4 overflow-y-auto rounded-2xl border border-ink-800 bg-ink-900 p-4"
         role="log"
         aria-live="polite"
-        aria-label="Messages"
+        aria-label="消息"
       >
         {turns.map((turn, i) => {
           const time = (
@@ -145,11 +141,11 @@ export function ChatView({
                   <figure className="max-w-[60%]">
                     <img
                       src={previewUrl}
-                      alt="The photo you uploaded for analysis"
+                      alt="你上传用于分析的照片"
                       className="rounded-2xl rounded-br-sm border border-ink-700"
                     />
                     <figcaption className="mt-1 text-right text-xs text-slate-500">
-                      Comparing to {archetype.label}
+                      与「{archetype.label}」对比
                     </figcaption>
                   </figure>
                 </div>
@@ -187,7 +183,7 @@ export function ChatView({
                     <img
                       key={k}
                       src={imageBlockToDataUrl(img)}
-                      alt="Photo you attached"
+                      alt="你附带的照片"
                       className="h-28 w-28 rounded-xl border border-ink-700 object-cover"
                     />
                   ))}
@@ -214,7 +210,7 @@ export function ChatView({
                 onClick={onRetry}
                 className="mt-2 rounded-md bg-red-500/20 px-3 py-1 text-xs font-medium text-red-100 hover:bg-red-500/30"
               >
-                Retry
+                重试
               </button>
             </div>
           </div>
@@ -229,11 +225,11 @@ export function ChatView({
         <div className="mt-3 flex items-center gap-3 rounded-2xl border border-ink-700 bg-ink-850 p-3">
           <img
             src={archetype.image}
-            alt={`Reference build for the ${archetype.label} archetype`}
+            alt={`「${archetype.label}」体型参考`}
             className="h-16 w-14 shrink-0 rounded-lg object-cover"
           />
           <div className="min-w-0 flex-1">
-            <p className="text-xs text-slate-400">The build you&rsquo;re training toward</p>
+            <p className="text-xs text-slate-400">你想要练成的身型</p>
             <p className="truncate text-sm font-semibold text-slate-100">{archetype.label}</p>
           </div>
           <button
@@ -242,20 +238,20 @@ export function ChatView({
             disabled={loading}
             className="shrink-0 rounded-xl bg-accent px-3 py-2 text-xs font-semibold text-white transition hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40"
           >
-            See your projected progress
+            查看你的进度预测
           </button>
         </div>
       )}
 
       {/* Quick-start suggestion chips + "Add your details" intake */}
       {showSuggestions && (
-        <div className="mt-3 flex flex-wrap gap-2" aria-label="Suggested questions">
+        <div className="mt-3 flex flex-wrap gap-2" aria-label="推荐问题">
           <button
             type="button"
             onClick={() => setIntakeOpen(true)}
             className="rounded-full border border-accent/60 bg-accent-soft px-3 py-1.5 text-xs font-semibold text-accent transition hover:border-accent hover:bg-ink-800"
           >
-            + Add your details
+＋ 补充你的资料
           </button>
           {SUGGESTIONS.map((s) => (
             <button
@@ -287,13 +283,13 @@ export function ChatView({
             <div key={i} className="relative">
               <img
                 src={a.previewUrl}
-                alt={`Attachment ${i + 1}`}
+                alt={`附件 ${i + 1}`}
                 className="h-16 w-16 rounded-lg border border-ink-700 object-cover"
               />
               <button
                 type="button"
                 onClick={() => removeAttachment(i)}
-                aria-label={`Remove attachment ${i + 1}`}
+                aria-label={`移除附件 ${i + 1}`}
                 className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-ink-700 text-xs text-slate-200 hover:bg-red-600"
               >
                 ×
@@ -322,8 +318,8 @@ export function ChatView({
           type="button"
           onClick={() => fileRef.current?.click()}
           disabled={attaching || attachments.length >= MAX_ATTACHMENTS}
-          aria-label="Attach a photo"
-          title="Attach a photo"
+          aria-label="添加照片"
+          title="添加照片"
           className="flex h-[2.75rem] w-[2.75rem] shrink-0 items-center justify-center rounded-xl border border-ink-700 bg-ink-850 text-slate-300 transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-40"
         >
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -331,7 +327,7 @@ export function ChatView({
           </svg>
         </button>
         <label htmlFor="chat-input" className="sr-only">
-          Ask a follow-up question
+          输入后续问题
         </label>
         <textarea
           id="chat-input"
@@ -341,7 +337,7 @@ export function ChatView({
             if (e.key === 'Enter' && !e.shiftKey) submit(e);
           }}
           rows={1}
-          placeholder="Ask a follow-up, or attach a progress photo…"
+          placeholder="输入后续问题，或附上一张进展照片…"
           className="max-h-32 min-h-[2.75rem] flex-1 resize-none rounded-xl border border-ink-700 bg-ink-850 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-accent focus:outline-none"
         />
         <button
@@ -349,7 +345,7 @@ export function ChatView({
           disabled={!canSend}
           className="h-[2.75rem] shrink-0 rounded-xl bg-accent px-4 text-sm font-semibold text-white transition hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40"
         >
-          Send
+          发送
         </button>
       </form>
     </section>

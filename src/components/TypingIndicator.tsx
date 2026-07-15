@@ -2,7 +2,7 @@ export function TypingIndicator() {
   return (
     <div className="flex justify-start" aria-live="polite">
       <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-sm bg-ink-800 px-4 py-3">
-        <span className="sr-only">The coach is thinking…</span>
+        <span className="sr-only">教练正在思考…</span>
         <Dot delay="0ms" />
         <Dot delay="150ms" />
         <Dot delay="300ms" />

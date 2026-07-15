@@ -14,12 +14,12 @@ export async function sendChat(messages: ApiMessage[]): Promise<string> {
       body: JSON.stringify({ messages }),
     });
   } catch {
-    throw new Error("Couldn't reach the server. Check your connection and try again.");
+    throw new Error('无法连接服务器，请检查网络后重试。');
   }
 
   if (!res.ok) {
     // The proxy returns a friendly { error } string; fall back to a generic one.
-    let message = 'Something went wrong. Please try again.';
+    let message = '出了点问题，请重试。';
     try {
       const data = (await res.json()) as { error?: string };
       if (data?.error) message = data.error;
@@ -31,7 +31,7 @@ export async function sendChat(messages: ApiMessage[]): Promise<string> {
 
   const data = (await res.json()) as { text?: string };
   if (!data.text) {
-    throw new Error('The AI returned an empty response. Please try again.');
+    throw new Error('AI 返回了空回复，请重试。');
   }
   return data.text;
 }
